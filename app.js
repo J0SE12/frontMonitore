@@ -9,10 +9,13 @@ class App extends Component {
   }
 
   callAPI() {
-    fetch("http://localhost:9000/testAPI")
+    // Usando a variável de ambiente definida no .env
+    const apiUrl = process.env.REACT_APP_BACKEND_URL;
+
+    fetch(`${apiUrl}/testAPI`)
       .then(res => res.text())
       .then(res => this.setState({ apiResponse: res }))
-      .catch(err => err);
+      .catch(err => console.error(err));
   }
 
   componentDidMount() {
@@ -33,3 +36,4 @@ class App extends Component {
 }
 
 export default App;
+
