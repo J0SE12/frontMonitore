@@ -19,8 +19,8 @@ function PaginaAluno({ alunoId }) {
     }
   }, [alunoId]);
 
-   // Função para buscar as aulas que o aluno está participando
-   const fetchAulas = useCallback(async () => {
+  // Função para buscar as aulas que o aluno está participando
+  const fetchAulas = useCallback(async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/aulas/${alunoId}`);
       const data = await response.json();
@@ -39,38 +39,7 @@ function PaginaAluno({ alunoId }) {
     } catch (error) {
       console.error("Erro ao buscar monitores:", error);
     }
-  }, [alunoId]);
-
-  // Função para enviar a avaliação do monitor
-  const submitAvaliacao = async (e) => {
-    e.preventDefault();
-
-    if (!monitorId || !feedback) {
-      setMensagem('Monitor e feedback são obrigatórios.');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/avaliacao`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ monitorId, feedback }),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setMensagem('Avaliação registrada com sucesso!');
-      } else {
-        setMensagem(`Erro: ${result.message}`);
-      }
-    } catch (error) {
-      console.error('Erro ao enviar avaliação:', error);
-      setMensagem('Erro ao registrar avaliação.');
-    }
-  };
+  }, []);
 
   // Carregar dados na montagem do componente
   useEffect(() => {
@@ -80,7 +49,7 @@ function PaginaAluno({ alunoId }) {
   }, [fetchPresencas, fetchAulas, fetchMonitores]);
 
   return (
-       <div>
+    <div>
       <h1>Página do Aluno</h1>
 
       <h2>Minhas Presenças</h2>
@@ -95,16 +64,15 @@ function PaginaAluno({ alunoId }) {
       </ul>
 
       <h2>Aulas Disponíveis</h2>
-<ul>
-  {Array.isArray(aulas) && aulas.length > 0 ? (
-    aulas.map((_aula, index) => (
-      <li key={index}>{_aula.nome}</li>
-    ))
-  ) : (
-    <li>Nenhuma aula disponível</li>
-  )}
-</ul>
-
+      <ul>
+        {Array.isArray(aulas) && aulas.length > 0 ? (
+          aulas.map((_aula, index) => (
+            <li key={index}>{_aula.nome}</li>
+          ))
+        ) : (
+          <li>Nenhuma aula disponível</li>
+        )}
+      </ul>
 
       <h2>Avaliar Monitor</h2>
       <form onSubmit={submitAvaliacao}>
@@ -116,11 +84,15 @@ function PaginaAluno({ alunoId }) {
             onChange={(e) => setMonitorId(e.target.value)}
           >
             <option value="">-- Selecione --</option>
-            {monitores.map((monitor) => (
-              <option key={monitor.id} value={monitor.id}>
-                {monitor.nome}
-              </option>
-            ))}
+            {Array.isArray(monitores) && monitores.length > 0 ? (
+              monitores.map((monitor) => (
+                <option key={monitor.id} value={monitor.id}>
+                  {monitor.nome}
+                </option>
+              ))
+            ) : (
+              <option disabled>Nenhum monitor disponível</option>
+            )}
           </select>
         </div>
 
