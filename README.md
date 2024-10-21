@@ -1,70 +1,278 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Monitore.me - Sistema para Monitoria
 
-## Available Scripts
+## Descrição
 
-In the project directory, you can run:
+Monitore.me é uma plataforma de monitoria acadêmica que visa facilitar o contato entre estudantes com dificuldades de aprendizado e aqueles dispostos a ajudar com aulas de reforço. O sistema proporciona um ambiente para que os monitores possam compartilhar seus conhecimentos e, ao mesmo tempo, desenvolver suas habilidades de ensino.
 
-### `npm start`
+## Resumo
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Este projeto faz parte do portfólio para a conclusão do curso de Engenharia de Software do Centro Universitário - Católica de Santa Catarina em Joinville. O objetivo é abordar as documentações, ideias e especificações necessárias para a execução do projeto, utilizando diversas ferramentas estudadas durante o curso.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Funcionalidades
 
-### `npm test`
+### Requisitos Funcionais
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Tela de login para alunos e monitores, utilizando o cadastro integrado à instituição.
+2. Cadastro de conteúdo a ser ministrado, vinculado ao monitor.
+3. Página inicial com assuntos e monitores cadastrados, disponível para os alunos.
+4. Filtros de busca para alunos (curso, nível de dificuldade, tempo e matéria).
+5. Limite de tempo e número de alunos por monitoria, definido pelo monitor.
+6. Cadastro de salas de aula e controle de disponibilidade.
+7. Controle de presença dos alunos, com sistema de chamada.
+8. Geração de comprovantes de horas complementares para alunos e monitores.
 
-### `npm run build`
+### Requisitos Não Funcionais
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Acessível em todos os navegadores de internet.
+2. Medidas de segurança robustas para proteção de dados sensíveis.
+3. Boa usabilidade conforme padrões da UXPA.
+4. Capacidade de lidar com um grande número de usuários sem comprometer o desempenho.
+5. Baixa latência no envio e visualização de informações.
+6. Alta confiabilidade e precisão das informações.
+7. Preparado para o controle de presença/faltas.
+8. Desenvolvimento web utilizando CSS, JavaScript, Node.js, React e Express.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Especificação Técnica
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Arquitetura
 
-### `npm run eject`
+O projeto utiliza a arquitetura MVC (Model-View-Controller) complementada por micro serviços para garantir uma separação clara de responsabilidades e facilitar a manutenção do sistema.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Stack Tecnológica
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+- **Front-End**: HTML, CSS, JavaScript, React
+- **Back-End**: Node.js, Express.js
+- **Banco de Dados**: MySQL
+- **Ferramentas e Bibliotecas**: React, Express.js, Git/GitHub, SonarQube, GitHub Actions, GitHub Pages
+- **Ambiente de Desenvolvimento**: VSCode
+-  **Metodologia**: Gráfico de Gantt / Github Projects
+  
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### Estrutura do Repositório
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Configuração e Hospedagem
 
-### Code Splitting
+### Publicação no GitHub Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+1. Vá para as configurações do repositório no GitHub.
+2. Na seção "GitHub Pages", escolha a branch que contém o código do site (ex: `main` ou `master`).
+3. Selecione a pasta raiz do site. O site será publicado no link [https://j0SE12.github.io/monitore_me](https://j0SE12.github.io/monitore_me).
 
-### Analyzing the Bundle Size
+## Modelagem C4
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Contexto
 
-### Making a Progressive Web App
+A plataforma visa facilitar o encontro de alunos com dificuldades em matérias específicas com monitores que desejam compartilhar seus conhecimentos. A modelagem do contexto pode ser visualizada na documentação associada.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Containers
 
-### Deployment
+- **Front-End**: HTML, CSS, JavaScript, React
+- **Back-End**: Node.js, Express.js
+- **Database**: MySQL
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Componentes
 
-### `npm run build` fails to minify
+- **Web Browser**: Interface de usuário para estudantes e monitores.
+- **GitHub Pages**: Hospedagem do site.
+- **Node.js Server**: Servidor back-end para lógica de negócios e APIs RESTful.
+- **MySQL Database**: Banco de dados relacional.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+## Testes
+
+Para garantir a funcionalidade do sistema, serão realizados testes automatizados utilizando Selenium e Jest, além de testes de integração com Postman e pipelines de CI/CD configurados com GitHub Actions.
+
+## Link para a documentação completa do projeto:
+[(https://docs.google.com/document/d/14Gew23AlxLhiaMCUJ64g_wO_LfH1c2Vvt5vYlJ5yuJg/edit?usp=sharing)]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+         
+
+
+
+
+
