@@ -1,60 +1,63 @@
+// src/App.js
 import React, { Component } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom"; // Importando o roteamento
-import PaginaAluno from "./aluno"; 
-import PaginaMonitor from "./monitor"; 
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from "react-router-dom";
+import PaginaAluno from "./PaginaAluno";
+import PaginaMonitor from "./PaginaMonitor";
+import Login from "./login";
+import { AuthProvider, AuthContext } from "./AuthContext";
+import ProtectedRoute from "./ProtectedRoute";
+
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { apiResponse: "" };
-  }
-
-  callAPI() {
-    // Usando a variável de ambiente definida no .env
-    const apiUrl = process.env.REACT_APP_BACKEND_URL;
-
-    fetch(`${apiUrl}/testAPI`)
-      .then((res) => res.text())
-      .then((res) => this.setState({ apiResponse: res }))
-      .catch((err) => console.error(err));
-  }
-
-  componentDidMount() {
-    this.callAPI();
-  }
-
   render() {
     return (
-      <Router>
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <h1 className="App-title">Welcome to React</h1>
-            <nav>
-              {/* Links para navegar entre as páginas */}
-              <Link to="/aluno">Página do Aluno</Link>
-              <Link to="/monitor">Página do Monitor</Link>
-            </nav>
-          </header>
-          
-          <p className="App-intro">{this.state.apiResponse}</p>
+      <AuthProvider>
+        <Router>
+          <div className="App">
+            <header className="App-header">
+              <h1>Bem-vindo ao Sistema de Aulas</h1>
+              <AuthContext.Consumer>
+                {({ auth }) => (
+                  <nav>
+                    {!auth.token && <Link to="/login">Login</Link>}
+                    {auth.token && (
+                      <>
+                        <Link to="/aluno">Página do Aluno</Link>
+                        <Link to="/monitor">Página do Monitor</Link>
+                      </>
+                    )}
+                  </nav>
+                )}
+              </AuthContext.Consumer>
+            </header>
 
-          <Routes>
-            {/* Rota para a Página do Aluno */}
-            <Route path="/aluno" element={<PaginaAluno />} />
+            <Routes>
+              {/* Rota inicial direciona para login */}
+              <Route path="/" element={<Navigate to="/login" />} />
+              <Route path="/login" element={<Login />} />
 
-            {/* Rota para a Página do Monitor */}
-            <Route path="/monitor" element={<PaginaMonitor />} />
-
-            {/* Rota padrão (home) */}
-            <Route path="/" element={<div>Bem-vindo à página inicial</div>} />
-          </Routes>
-        </div>
-      </Router>
+              {/* Rotas protegidas */}
+              <Route
+                path="/aluno"
+                element={
+                  <ProtectedRoute>
+                    <PaginaAluno />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/monitor"
+                element={
+                  <ProtectedRoute>
+                    <PaginaMonitor />
+                  </ProtectedRoute>
+                }
+              />
+            </Routes>
+          </div>
+        </Router>
+      </AuthProvider>
     );
   }
 }
 
 export default App;
-
