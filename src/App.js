@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom"; // Importando o roteamento
-import PaginaAluno from "./aluno"; 
+
 import PaginaMonitor from "./monitor"; 
 class App extends Component {
   constructor(props) {
@@ -33,7 +33,7 @@ class App extends Component {
             <h1 className="App-title">Welcome to React</h1>
             <nav>
               {/* Links para navegar entre as páginas */}
-              <Link to="/aluno">Página do Aluno</Link>
+              
               <Link to="/monitor">Página do Monitor</Link>
             </nav>
           </header>
@@ -41,9 +41,7 @@ class App extends Component {
           <p className="App-intro">{this.state.apiResponse}</p>
 
           <Routes>
-            {/* Rota para a Página do Aluno */}
-            <Route path="/aluno" element={<PaginaAluno />} />
-
+  
             {/* Rota para a Página do Monitor */}
             <Route path="/monitor" element={<PaginaMonitor />} />
 

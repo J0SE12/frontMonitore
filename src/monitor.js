@@ -4,7 +4,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import PaginaPerfilMonitor from "./PerfilMonitor";
 import PaginaDisciplinas from "./DisciplinasMonitor";
 import PaginaSalas from "./SalasMonitor";
-import PaginaAvaliacoes from "./AvaliacoesMonitor";
+import PaginaAvaliacoes from "./AvalicaoesMonitor"
 import ControlePresenca from "./ControlePresenca"
 
 const PaginaMonitor = () => {

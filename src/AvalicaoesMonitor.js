@@ -22,9 +22,9 @@ const PaginaAvaliacoes = () => {
     <div>
       <h3>Avaliações dos Monitores</h3>
       <ul>
-        {avaliacoes.map((avaliacao) => (
-          <li key={avaliacao.id}>
-            Feedback: {avaliacao.feedback} - Monitor: {avaliacao.monitor_nome}
+        {avaliacoes.map((avaliacoes) => (
+          <li key={avaliacoes.id}>
+            Feedback: {avaliacoes.feedback} - Monitor: {avaliacoes.monitor_nome}
           </li>
         ))}
       </ul>
