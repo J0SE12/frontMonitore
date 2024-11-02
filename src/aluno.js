@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
-import PaginaPerfilAluno from "./PerfilAluno";
+import PerfilAluno from "./PerfilAluno";
 import PaginaNotificacoes from "./notificacoesaluno";
 import PaginaAulas from "./aulasaluno";
 import PaginaAvaliacoes from "./avaliacaoaluno";
@@ -17,11 +17,12 @@ const PaginaAluno = () => {
         <Link to="notificacoes">Notificações</Link>
         <Link to="aulas">Minhas Aulas</Link>
         <Link to="avaliacoes">Avaliar Monitor</Link>
+        <Link to="avaliacoes">Avaliar Monitor</Link>
       </nav>
 
       {/* Rotas aninhadas para sub-páginas */}
       <Routes>
-        <Route path="perfil" element={<PaginaPerfilAluno alunoId={alunoId} />} />
+        <Route path="perfil" element={<PerfilAluno alunoId={alunoId} />} />
         <Route path="notificacoes" element={<PaginaNotificacoes alunoId={alunoId} />} />
         <Route path="aulas" element={<PaginaAulas alunoId={alunoId} />} />
         <Route path="avaliacoes" element={<PaginaAvaliacoes alunoId={alunoId} />} />

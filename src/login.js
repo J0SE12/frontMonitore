@@ -1,12 +1,11 @@
-// src/Login.js
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "./AuthContext"; // Certifique-se de que o AuthContext está configurado corretamente
+import { AuthContext } from "./AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const { setAuth } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -24,11 +23,10 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Salvando o token no contexto ou localStorage
-        setAuth({ token: data.token });
-        localStorage.setItem("token", data.token);
+        // Chama o login do contexto para definir o token
+        login(data.token);
         
-        // Redireciona para a página do aluno (ou monitor dependendo do papel)
+        // Redireciona para a página do aluno
         navigate("/aluno");
       } else {
         alert(data.message || "Erro ao fazer login");

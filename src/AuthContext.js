@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Cria o contexto de autenticação
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 // Hook para acessar o contexto de autenticação
 export const useAuth = () => {
