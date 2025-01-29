@@ -1,21 +1,26 @@
 import React from "react";
 import { Routes, Route, Link } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 import PaginaNotificacoes from "./notificacoesaluno";
 import PaginaAulas from "./aulasaluno";
 import PaginaAvaliacoes from "./avaliacaoaluno";
 
 const PaginaAluno = () => {
-  const alunoId = 1; // ID fictício para exemplo
+  const { user } = useAuth(); // Obtém o usuário autenticado
+  const alunoId = user?.id; // Usa o ID do aluno autenticado
+
+  if (!alunoId) {
+    return <p>Erro: ID do aluno não encontrado.</p>;
+  }
 
   return (
     <div>
       <h2>Página do Aluno</h2>
       <nav>
         {/* Links para navegar entre as sub-páginas do aluno */}
-        <Link to="notificacoes">Notificações</Link>
-        <Link to="aulas">Minhas Aulas</Link>
-        <Link to="avaliacoes">Avaliar Monitor</Link>
-        <Link to="avaliacoes">Avaliar Monitor</Link>
+        <Link to={`notificacoes`}>Notificações</Link>
+        <Link to={`aulas`}>Minhas Aulas</Link>
+        <Link to={`avaliacoes`}>Avaliar Monitor</Link>
       </nav>
 
       {/* Rotas aninhadas para sub-páginas */}

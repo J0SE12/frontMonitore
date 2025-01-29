@@ -5,6 +5,7 @@ import PaginaAluno from "./aluno";
 import Login from "./login";
 import { AuthProvider, AuthContext } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
+import PerfilAluno from "./PerfilAluno"
 
 class App extends Component {
   render() {
@@ -24,9 +25,9 @@ class App extends Component {
             </header>
 
             <Routes>
-              {/* Rota inicial direciona para login */}
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<Login />} />
+        <Route path="/aluno/perfil/:id" element={<PerfilAluno />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
               {/* Rotas protegidas */}
               <Route
@@ -36,7 +37,19 @@ class App extends Component {
                     <PaginaAluno />
                   </ProtectedRoute>
                 }
+
               />
+               {/* Rota para o perfil do aluno específico */}
+  <Route
+    path="/aluno/perfil/:id"
+    element={
+      <ProtectedRoute>
+        <PerfilAluno />
+      </ProtectedRoute>
+    }
+  />
+
+
             </Routes>
           </div>
         </AuthProvider>
