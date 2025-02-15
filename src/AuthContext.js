@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
-    navigate("/login"); // Redireciona para login
+    navigate("/login", { replace: true }); // Redireciona para login
   };
 
   // Verifica se há usuário no localStorage ao carregar o componente
@@ -43,12 +43,17 @@ export const AuthProvider = ({ children }) => {
 
   // Redireciona para `/login` somente após confirmar que o usuário não está autenticado
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && !user && window.location.pathname !== "/login") {
       navigate("/login", { replace: true });
     }
-  }, [loading, user, navigate]);
+  }, [user, navigate, loading]);
 
-  const value = { user, login, logout };
+  // Definição do `value` para o AuthContext.Provider
+  const value = {
+    user,
+    login,
+    logout,
+  };
 
   return (
     <AuthContext.Provider value={value}>

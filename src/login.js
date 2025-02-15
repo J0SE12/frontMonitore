@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 const Login = () => {
@@ -7,12 +7,12 @@ const Login = () => {
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const location = useLocation();
   const { login, user } = useAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError(""); // Limpa erros anteriores
+  
     try {
       const response = await fetch("http://localhost:9000/usuarios/login", {
         method: "POST",
@@ -21,9 +21,9 @@ const Login = () => {
         },
         body: JSON.stringify({ email, senha }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         login({ token: data.token, userId: data.id }); // Atualiza o contexto
       } else {
@@ -33,13 +33,19 @@ const Login = () => {
       setError("Erro de rede. Tente novamente mais tarde.");
     }
   };
-
+  
+  // Redireciona o usuário para o perfil após o login bem-sucedido
   useEffect(() => {
     if (user?.userId) {
-      const from = location.state?.from?.pathname || `/perfil/${user.userId}`;
-      navigate(from, { replace: true }); // Redireciona para o perfil do aluno
+      console.log("Redirecionando para:", `/aluno/perfil/${user.userId}`);
+
+      // Alternativa 1: Redirecionamento React Router
+    //  navigate(`/aluno/perfil/${user.userId}`, { replace: true });
+
+      // Alternativa 2: Recarrega a página inteira (caso o React Router falhe)
+       window.location.href = `http://localhost:3000/aluno/perfil/${user.userId}`;
     }
-  }, [user, navigate, location]);
+  }, [user, navigate]);
 
   return (
     <div>

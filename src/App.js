@@ -41,12 +41,7 @@ class App extends Component {
               />
                {/* Rota para o perfil do aluno específico */}
   <Route
-    path="/aluno/perfil/:id"
-    element={
-      <ProtectedRoute>
-        <PerfilAluno />
-      </ProtectedRoute>
-    }
+    
   />
 
 
