@@ -3,20 +3,16 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
 const PerfilAluno = () => {
-  const { user } = useAuth();
-  const { id } = useParams();
+  const { user } = useAuth(); // Obtém usuário autenticado
+  const { id } = useParams(); // Obtém o ID da URL
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState(null);
   const [notificacoes, setNotificacoes] = useState([]);
   const [aulas, setAulas] = useState([]);
   const [erro, setErro] = useState("");
-  const [mensagem, setMensagem] = useState("");
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login"); // Redireciona se o usuário não estiver autenticado
-      return;
-    }
+    if (!user) return; // Garante que o user existe antes de buscar os dados
 
     const fetchPerfil = async () => {
       try {
@@ -59,64 +55,52 @@ const PerfilAluno = () => {
     fetchPerfil();
     fetchNotificacoes();
     fetchAulas();
-  }, [id, user, navigate]);
+  }, [id, user]);
 
-  // Função para avaliar um monitor
-  const avaliarMonitor = async () => {
-    const monitorId = prompt("Digite o ID do monitor que deseja avaliar:");
-    const feedback = prompt("Digite sua avaliação para o monitor:");
+  // Se não há usuário autenticado, impede redirecionamento automático
+  if (!user) {
+    return <p>Carregando...</p>;
+  }
 
-    if (!monitorId || !feedback) {
-      alert("Preencha todos os campos para enviar a avaliação.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:9000/aluno/avaliacao", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ monitorId, feedback }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setMensagem("Avaliação enviada com sucesso!");
-      } else {
-        setMensagem(data.message || "Erro ao enviar avaliação.");
-      }
-    } catch (error) {
-      setMensagem("Erro ao enviar avaliação.");
-    }
+  // ✅ Função para redirecionar para avaliação
+  const handleAvaliacaoClick = () => {
+    navigate(`/aluno/avaliacoes`);
   };
-
-  if (erro) return <p style={{ color: 
-"red" }}>{erro}</p>;
 
   return (
     <div>
-      <h1>Perfil do Aluno</h1>
-      <h2>{perfil?.nome}</h2>
-      <p>ID: {perfil?.id}</p>
-      <p>Email: {perfil?.email}</p>
-      <h2>Notificações</h2>
+      <h2>Perfil do Aluno</h2>
+      <p><strong>Nome:</strong> {perfil?.nome}</p>
+      <p><strong>ID:</strong> {perfil?.id}</p>
+      <p><strong>Email:</strong> {perfil?.email}</p>
+
+      <h3>Notificações</h3>
       <ul>
-        {notificacoes.map((notificacao, index) => (
-          <li key={index}>{notificacao.mensagem}</li>
-        ))}
+        {notificacoes.length > 0 ? (
+          notificacoes.map((notif) => <li key={notif.id}>{notif.mensagem}</li>)
+        ) : (
+          <p>Sem notificações.</p>
+        )}
       </ul>
-      <h2>Minhas Aulas</h2>
+
+      <h3>Minhas Aulas</h3>
       <ul>
-        {aulas.map((aula, index) => (
-          <li key={index}>
-            {`${aula.sala_nome} - ${aula.disciplina} (${aula.dia_da_semana}, ${aula.hora_inicio} - ${aula.hora_fim})`}
-          </li>
-        ))}
+        {aulas.length > 0 ? (
+          aulas.map((aula) => (
+            <li key={aula.id_sala}>
+              {aula.disciplina} - {aula.dia_da_semana} ({aula.hora_inicio} - {aula.hora_fim})
+            </li>
+          ))
+        ) : (
+          <p>Sem aulas cadastradas.</p>
+        )}
       </ul>
-      <button onClick={avaliarMonitor}>Avaliar Monitor</button>
-      {mensagem && <p>{mensagem}</p>}
-    </div>
-  );
-}
+
+        {/* ✅ Botão corrigido para chamar a função de redirecionamento */}
+        <button onClick={handleAvaliacaoClick}>Avaliar Monitor</button>
+  </div>
+);
+  
+};
 
 export default PerfilAluno;
