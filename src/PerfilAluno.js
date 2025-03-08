@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -6,10 +6,12 @@ const PerfilAluno = () => {
   const { user } = useAuth(); // Obtém usuário autenticado
   const { id } = useParams(); // Obtém o ID da URL
   const navigate = useNavigate();
+
   const [perfil, setPerfil] = useState(null);
   const [notificacoes, setNotificacoes] = useState([]);
   const [aulas, setAulas] = useState([]);
-  const [erro, setErro] = useState("");
+  const [avaliacao, setAvaliacao] = useState(null);
+  const [erro, setErro] = useState(""); // Agora `erro` será exibido na interface.
 
   useEffect(() => {
     if (!user) return; // Garante que o user existe antes de buscar os dados
@@ -36,7 +38,7 @@ const PerfilAluno = () => {
           setNotificacoes(data);
         }
       } catch (error) {
-        console.error("Erro ao carregar notificações:", error);
+        setErro("Erro ao carregar notificações.");
       }
     };
 
@@ -48,13 +50,26 @@ const PerfilAluno = () => {
           setAulas(data);
         }
       } catch (error) {
-        console.error("Erro ao carregar aulas:", error);
+        setErro("Erro ao carregar aulas.");
+      }
+    };
+
+    const fetchAvaliacao = async () => {
+      try {
+        const response = await fetch(`http://localhost:9000/aluno/avaliacao/${id}`);
+        const data = await response.json();
+        if (response.ok) {
+          setAvaliacao(data);
+        }
+      } catch (error) {
+        setErro("Erro ao carregar avaliações.");
       }
     };
 
     fetchPerfil();
     fetchNotificacoes();
     fetchAulas();
+    fetchAvaliacao();
   }, [id, user]);
 
   // Se não há usuário autenticado, impede redirecionamento automático
@@ -64,22 +79,30 @@ const PerfilAluno = () => {
 
   // ✅ Função para redirecionar para avaliação
   const handleAvaliacaoClick = () => {
-    navigate(`/aluno/avaliacoes`);
+    navigate(`/aluno/avaliacao/${id}`, { replace: true });
   };
 
   return (
     <div>
       <h2>Perfil do Aluno</h2>
-      <p><strong>Nome:</strong> {perfil?.nome}</p>
-      <p><strong>ID:</strong> {perfil?.id}</p>
-      <p><strong>Email:</strong> {perfil?.email}</p>
+      {perfil ? (
+        <>
+          <p><strong>Nome:</strong> {perfil.nome}</p>
+          <p><strong>ID:</strong> {perfil.id}</p>
+          <p><strong>Email:</strong> {perfil.email}</p>
+        </>
+      ) : (
+        <p>Carregando perfil...</p>
+      )}
+
+      {erro && <p style={{ color: "red" }}>{erro}</p>} {/* Exibição de erro */}
 
       <h3>Notificações</h3>
       <ul>
         {notificacoes.length > 0 ? (
           notificacoes.map((notif) => <li key={notif.id}>{notif.mensagem}</li>)
         ) : (
-          <p>Sem notificações.</p>
+          <p>Nenhuma notificação encontrada.</p>
         )}
       </ul>
 
@@ -88,19 +111,27 @@ const PerfilAluno = () => {
         {aulas.length > 0 ? (
           aulas.map((aula) => (
             <li key={aula.id_sala}>
-              {aula.disciplina} - {aula.dia_da_semana} ({aula.hora_inicio} - {aula.hora_fim})
+              {aula.disciplina} - {aula.dia_da_semana} às {aula.hora_inicio} ({aula.localizacao})
             </li>
           ))
         ) : (
-          <p>Sem aulas cadastradas.</p>
+          <p>Nenhuma aula encontrada.</p>
         )}
       </ul>
 
-        {/* ✅ Botão corrigido para chamar a função de redirecionamento */}
-        <button onClick={handleAvaliacaoClick}>Avaliar Monitor</button>
-  </div>
-);
-  
+      <h3>Minhas Avaliações</h3>
+      <ul>
+        {avaliacao ? (
+          <li>{avaliacao.feedback}</li>
+        ) : (
+          <p>Nenhuma avaliação encontrada.</p>
+        )}
+      </ul>
+
+      {/* ✅ Botão corrigido para avaliação */}
+      <button onClick={handleAvaliacaoClick}>Avaliar Monitor</button>
+    </div>
+  );
 };
 
 export default PerfilAluno;
