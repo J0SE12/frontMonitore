@@ -6,7 +6,10 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
   const location = useLocation();
 
+  console.log(`🔒 Protegendo a rota: ${location.pathname}`); // Log para depuração
+
   if (!user || !user.token) {
+    console.warn("🔑 Usuário não autenticado! Redirecionando para login...");
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 

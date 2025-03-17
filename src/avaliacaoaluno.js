@@ -7,7 +7,8 @@ function AvaliacaoAluno({ monitorId }) {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/avaliacao`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/avaliacao/${monitorId}`, 
+         {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -5,6 +5,7 @@ import Login from "./login";
 import { AuthProvider, AuthContext } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import PerfilAluno from "./PerfilAluno"
+import AvaliacaoAluno from "./avaliacaoaluno";
 
 class App extends Component {
   render() {
@@ -28,7 +29,8 @@ class App extends Component {
         <Route path="/aluno/perfil/:id" element={<PerfilAluno />} />
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/aluno/*" element={<Navigate to="/aluno/perfil/:id" replace />} />
-
+        <Route path="/avaliacao" element={<AvaliacaoAluno />} />
+         
 
               {/* Rotas protegidas */}
               <Route
