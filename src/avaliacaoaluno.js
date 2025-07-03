@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAuth } from './AuthContext';
+import { postAvaliacao } from './services/api'; // 👈 Use o serviço
 
-function AvaliacaoAluno({ monitorId }) {
+function AvaliacaoAluno() {
+  const { monitorId } = useParams();
+  const { user } = useAuth();
   const [feedback, setFeedback] = useState('');
+  const [message, setMessage] = useState(''); // Estado para feedback na UI
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage('');
 
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/avaliacao/${monitorId}`, 
-         {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ monitorId, feedback }),
+      await postAvaliacao({ 
+        alunoId: user.id, 
+        monitorId: monitorId, 
+        feedback: feedback 
       });
-
-      if (response.ok) {
-        alert("Avaliação enviada com sucesso!");
-        setFeedback(''); // Limpa o feedback após o envio
-      } else {
-        alert("Erro ao enviar avaliação. Tente novamente.");
-      }
+      setMessage({ type: 'success', text: 'Avaliação enviada com sucesso!' });
+      setFeedback('');
     } catch (error) {
-      console.error("Erro ao enviar avaliação:", error);
+      setMessage({ type: 'error', text: error.message });
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} />
+      <h3>Avaliar Monitor</h3>
+      <textarea value={feedback} onChange={(e) => setFeedback(e.target.value)} required />
       <button type="submit">Enviar Avaliação</button>
+      {message && (
+        <p style={{ color: message.type === 'error' ? 'red' : 'green' }}>
+          {message.text}
+        </p>
+      )}
     </form>
   );
 }

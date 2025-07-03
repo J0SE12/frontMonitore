@@ -1,15 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { getAulasDoAluno } from './services/api'; // 👈 Use o serviço
 
 function PaginaAulas({ alunoId }) {
   const [aulas, setAulas] = useState([]);
+  const [error, setError] = useState(null); // 👈 Estado para erro
 
   const fetchAulas = useCallback(async () => {
+    setError(null); // Limpa erros anteriores
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/aulas/${alunoId}`);
-      const data = await response.json();
+      const data = await getAulasDoAluno(alunoId);
       setAulas(data);
-    } catch (error) {
-      console.error("Erro ao buscar aulas:", error);
+    } catch (err) {
+      setError(err.message || "Erro ao buscar aulas.");
     }
   }, [alunoId]);
 
@@ -20,19 +23,23 @@ function PaginaAulas({ alunoId }) {
   return (
     <div>
       <h1>Minhas Aulas</h1>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <ul>
-        {Array.isArray(aulas) && aulas.length > 0 ? (
-          aulas.map((aula, index) => (
-            <li key={index}>
+        {!error && aulas.length > 0 ? (
+          aulas.map((aula) => ( // Supondo que aula tenha um ID único
+            <li key={aula.id_aula || aula.id}> 
               {`${aula.sala_nome} - ${aula.disciplina} (${aula.dia_da_semana}, ${aula.hora_inicio} - ${aula.hora_fim})`}
             </li>
           ))
         ) : (
-          <li>Nenhuma aula encontrada.</li>
+          !error && <li>Nenhuma aula encontrada.</li>
         )}
       </ul>
     </div>
   );
 }
+PaginaAulas.propTypes = {
+  alunoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
 
 export default PaginaAulas;

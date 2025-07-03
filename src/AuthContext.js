@@ -1,4 +1,6 @@
+// Em AuthContext.js
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 export const AuthContext = createContext();
@@ -12,18 +14,30 @@ export const AuthProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
-  // 🔹 Função de login que salva o usuário e o token no LocalStorage
-  const login = (userData) => {
-    if (!userData || !userData.token) {
-      console.error("Erro: Usuário inválido ao tentar fazer login");
+  // 👇 FUNÇÃO DE LOGIN CORRIGIDA
+  const login = useCallback((userData) => {
+    // Validação mais robusta dos dados recebidos
+    if (!(userData?.token && userData?.id && userData?.papel)) {
+      console.error("Erro: Dados do usuário incompletos ao tentar fazer login");
       return;
     }
-    setUser(userData);
+    // Salva o objeto completo: { token, id, papel }
+    setUser(userData); 
     localStorage.setItem("user", JSON.stringify(userData));
-    navigate(`/aluno/perfil/${userData.id}`);
-  };
+    
+    // Redireciona com base no papel do usuário
+    if (userData.papel === 'aluno') {
+        navigate(`/aluno/perfil/${userData.id}`);
+    } else if (userData.papel === 'monitor') {
+        // Exemplo de redirecionamento para monitores
+        // navigate(`/monitor/dashboard/${userData.id}`); 
+    } else {
+        // Redirecionamento padrão caso o papel não seja reconhecido
+        navigate('/');
+    }
+  }, [navigate]);
 
-  // 🔹 Função de logout
+  // Sua função de logout (mantida)
   const logout = useCallback(() => {
     console.log("Realizando logout...");
     setUser(null);
@@ -31,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     navigate("/login");
   }, [navigate]);
 
-  // 🔹 Verifica se há um usuário no LocalStorage ao carregar a aplicação
+  // Seu useEffect para verificar o usuário no carregamento (mantido)
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
@@ -44,9 +58,15 @@ export const AuthProvider = ({ children }) => {
     }
   }, [logout]);
 
+  const contextValue = React.useMemo(() => ({ user, login, logout }), [user, login, logout]);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
-    </AuthContext.Provider>
-  );
+    </AuthContext.Provider> )
 };
+
+AuthProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+AuthProvider.displayName = "AuthProvider";

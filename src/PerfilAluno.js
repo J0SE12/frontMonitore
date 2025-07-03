@@ -1,135 +1,59 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { getPerfilAluno } from "./services/api"; // 👈 Use o serviço
+
+// 👇 IMPORTE OS COMPONENTES QUE VOCÊ JÁ TEM
+import PaginaAulas from "./aulasaluno";
+import PaginaNotificacoes from "./avaliacaoaluno";
 
 const PerfilAluno = () => {
-  const { user } = useAuth(); // Obtém usuário autenticado
-  const { id } = useParams(); // Obtém o ID da URL
+  const { id } = useParams();
   const navigate = useNavigate();
-
   const [perfil, setPerfil] = useState(null);
-  const [notificacoes, setNotificacoes] = useState([]);
-  const [aulas, setAulas] = useState([]);
-  const [avaliacao, setAvaliacao] = useState(null);
-  const [erro, setErro] = useState(""); // Agora `erro` será exibido na interface.
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
-    if (!user) return; // Garante que o user existe antes de buscar os dados
-
+    // A verificação de usuário logado agora é feita pelo ProtectedRoute.
+    // Este componente só busca os dados do perfil.
     const fetchPerfil = async () => {
       try {
-        const response = await fetch(`http://localhost:9000/aluno/perfil/${id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setPerfil(data);
-        } else {
-          setErro(data.message || "Erro ao carregar perfil.");
-        }
+        const data = await getPerfilAluno(id);
+        setPerfil(data);
       } catch (error) {
-        setErro("Erro ao carregar perfil.");
+        setErro(error.message);
       }
     };
-
-    const fetchNotificacoes = async () => {
-      try {
-        const response = await fetch(`http://localhost:9000/aluno/notificacoes/${id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setNotificacoes(data);
-        }
-      } catch (error) {
-        setErro("Erro ao carregar notificações.");
-      }
-    };
-
-    const fetchAulas = async () => {
-      try {
-        const response = await fetch(`http://localhost:9000/aluno/aulas/${id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setAulas(data);
-        }
-      } catch (error) {
-        setErro("Erro ao carregar aulas.");
-      }
-    };
-
-    const fetchAvaliacao = async () => {
-      try {
-        const response = await fetch(`http://localhost:9000/aluno/avaliacao/${id}`);
-        const data = await response.json();
-        if (response.ok) {
-          setAvaliacao(data);
-        }
-      } catch (error) {
-        setErro("Erro ao carregar avaliações.");
-      }
-    };
-
     fetchPerfil();
-    fetchNotificacoes();
-    fetchAulas();
-    fetchAvaliacao();
-  }, [id, user]);
+  }, [id]);
 
-  // Se não há usuário autenticado, impede redirecionamento automático
-  if (!user) {
-    return <p>Carregando...</p>;
-  }
-
-  // ✅ Função para redirecionar para avaliação
-  const handleAvaliacaoClick = () => {
-    navigate(`/aluno/avaliacao/${id}`, { replace: true });
+  // Função para navegar para a página de avaliação
+  // Supondo que você queira avaliar um monitor específico. 
+  // O ID do monitor precisaria vir de algum lugar (ex: de uma lista de monitores).
+  // Por simplicidade, vamos usar um ID fixo como exemplo.
+  const handleAvaliacaoClick = (monitorId) => {
+    navigate(`/avaliacao/${monitorId}`);
   };
+
+  if (erro) return <p style={{ color: "red" }}>{erro}</p>;
+  if (!perfil) return <p>Carregando perfil...</p>;
 
   return (
     <div>
       <h2>Perfil do Aluno</h2>
-      {perfil ? (
-        <>
-          <p><strong>Nome:</strong> {perfil.nome}</p>
-          <p><strong>ID:</strong> {perfil.id}</p>
-          <p><strong>Email:</strong> {perfil.email}</p>
-        </>
-      ) : (
-        <p>Carregando perfil...</p>
-      )}
+      <p><strong>Nome:</strong> {perfil.nome}</p>
+      <p><strong>Email:</strong> {perfil.email}</p>
+      
+      {/* Exemplo de botão para avaliar um monitor específico */}
+      <button onClick={() => handleAvaliacaoClick(1)}>Avaliar Monitor ID 1</button>
+      
+      <hr />
+      
+      {/* 👇 RENDERIZE OS OUTROS COMPONENTES AQUI, passando o ID do aluno */}
+      <PaginaNotificacoes alunoId={id} />
+      
+      <hr />
 
-      {erro && <p style={{ color: "red" }}>{erro}</p>} {/* Exibição de erro */}
-
-      <h3>Notificações</h3>
-      <ul>
-        {notificacoes.length > 0 ? (
-          notificacoes.map((notif) => <li key={notif.id}>{notif.mensagem}</li>)
-        ) : (
-          <p>Nenhuma notificação encontrada.</p>
-        )}
-      </ul>
-
-      <h3>Minhas Aulas</h3>
-      <ul>
-        {aulas.length > 0 ? (
-          aulas.map((aula) => (
-            <li key={aula.id_sala}>
-              {aula.disciplina} - {aula.dia_da_semana} às {aula.hora_inicio} ({aula.localizacao})
-            </li>
-          ))
-        ) : (
-          <p>Nenhuma aula encontrada.</p>
-        )}
-      </ul>
-
-      <h3>Minhas Avaliações</h3>
-      <ul>
-        {avaliacao ? (
-          <li>{avaliacao.feedback}</li>
-        ) : (
-          <p>Nenhuma avaliação encontrada.</p>
-        )}
-      </ul>
-
-      {/* ✅ Botão corrigido para avaliação */}
-      <button onClick={handleAvaliacaoClick}>Avaliar Monitor</button>
+      <PaginaAulas alunoId={id} />
     </div>
   );
 };

@@ -1,15 +1,19 @@
+// Em PaginaNotificacoes.js
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import { getNotificacoesDoAluno } from './services/api'; 
 
 function PaginaNotificacoes({ alunoId }) {
   const [notificacoes, setNotificacoes] = useState([]);
+  const [error, setError] = useState(null); 
 
   const fetchNotificacoes = useCallback(async () => {
+    setError(null); // Limpa erros anteriores
     try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/notificacoes/${alunoId}`);
-      const data = await response.json();
+      const data = await getNotificacoesDoAluno(alunoId);
       setNotificacoes(data);
-    } catch (error) {
-      console.error("Erro ao buscar notificações:", error);
+    } catch (err) {
+      setError(err.message || "Erro ao buscar notificações.");
     }
   }, [alunoId]);
 
@@ -20,17 +24,21 @@ function PaginaNotificacoes({ alunoId }) {
   return (
     <div>
       <h1>Minhas Notificações</h1>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <ul>
-        {Array.isArray(notificacoes) && notificacoes.length > 0 ? (
-          notificacoes.map((notificacao, index) => (
-            <li key={index}>{notificacao.mensagem}</li>
+        {!error && notificacoes.length > 0 ? (
+          notificacoes.map((notificacao) => (
+            <li key={notificacao.id}>{notificacao.mensagem}</li>
           ))
         ) : (
-          <li>Nenhuma notificação encontrada.</li>
+          !error && <li>Nenhuma notificação encontrada.</li>
         )}
       </ul>
     </div>
   );
 }
+PaginaNotificacoes.propTypes = {
+  alunoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
 
 export default PaginaNotificacoes;
