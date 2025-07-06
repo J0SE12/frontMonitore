@@ -14,11 +14,7 @@ class App extends Component {
       <Router>
         <AuthProvider>
           <div className="App">
-            <header className="App-header">
-              <h1>Bem-vindo ao Sistema de Aulas</h1>
-              {/* A lógica de navegação no header pode ser removida ou ajustada,
-                  pois o ProtectedRoute cuidará dos redirecionamentos de forma mais eficaz. */}
-            </header>
+            
 
             <Routes>
               {/* Rota Pública */}
