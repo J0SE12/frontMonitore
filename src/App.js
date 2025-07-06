@@ -6,6 +6,7 @@ import { AuthProvider } from "./AuthContext";
 import ProtectedRoute from "./ProtectedRoute";
 import PerfilAluno from "./PerfilAluno";
 import AvaliacaoAluno from "./avaliacaoaluno";
+import PerfilMonitor from './PerfilMonitor'; 
 
 class App extends Component {
   render() {
@@ -40,6 +41,16 @@ class App extends Component {
                 element={
                   <ProtectedRoute>
                     <AvaliacaoAluno />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* 👇 ADICIONE A NOVA ROTA PROTEGIDA PARA O MONITOR */}
+              <Route
+                path="/monitor/perfil/:id"
+                element={
+                  <ProtectedRoute>
+                    <PerfilMonitor />
                   </ProtectedRoute>
                 }
               />

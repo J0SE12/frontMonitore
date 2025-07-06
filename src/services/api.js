@@ -9,8 +9,6 @@ const apiService = async (endpoint, options = {}) => {
 
   const headers = { 'Content-Type': 'application/json' };
   if (token) {
-    // IMPORTANTE: O padrão é 'Bearer token', seu backend pode precisar de ajuste
-    // ou você pode remover 'Bearer ' se seu backend espera só o token.
     headers['Authorization'] = `Bearer ${token}`;
   }
 
@@ -40,9 +38,20 @@ const apiService = async (endpoint, options = {}) => {
   }
 };
 
-// Exporte uma função para cada endpoint da sua API
+// Funções para endpoints de Aluno
 export const loginUser = (credentials) => apiService('/usuarios/login', { body: credentials });
 export const getPerfilAluno = (id) => apiService(`/aluno/perfil/${id}`);
-export const getAulasDoAluno = (id) => apiService(`/aluno/aulas/${id}`); // Supondo que esta rota exista
-export const getNotificacoesDoAluno = (id) => apiService(`/aluno/notificacoes/${id}`); // Supondo que esta rota exista
+export const getAulasDoAluno = (id) => apiService(`/aluno/aulas/${id}`);
+export const getNotificacoesDoAluno = (id) => apiService(`/aluno/notificacoes/${id}`);
 export const postAvaliacao = (avaliacaoData) => apiService('/aluno/avaliacao', { body: avaliacaoData });
+
+// Funções para endpoints de Monitor
+export const getPerfilMonitor = (id) => apiService(`/api/monitor/perfil/${id}`);
+export const getDisciplinas = () => apiService(`/api/monitor/disciplinas`);
+export const getSalas = () => apiService(`/api/monitor/salas`);
+export const getAvaliacoesDoMonitor = (id) => apiService(`/api/monitor/avaliacoes/${id}`);
+export const getPresencasDoAluno = (alunoId) => apiService(`/api/monitor/presencas/${alunoId}`);
+export const postPresenca = (presencaData) => apiService('/api/monitor/presencas/criar', { body: presencaData });
+export const criarDisciplina = (data) => apiService('/api/monitor/disciplinas/criar', { body: data });
+export const criarSala = (data) => apiService('/api/monitor/salas/criar', { body: data });
+export const criarAvaliacao = (data) => apiService('/api/monitor/avaliacoes/criar', { body: data });
