@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPerfilMonitor } from './services/api';
+import { useAuth } from './AuthContext'; // 👈 1. Importe o useAuth
 
 // Importe os componentes de gestão
 import PaginaDisciplinas from './DisciplinasMonitor';
@@ -10,6 +11,7 @@ import ControlePresenca from './ControlePresenca';
 
 const PerfilMonitor = () => {
     const { id } = useParams();
+    const { logout } = useAuth(); // 👈 2. Obtenha a função de logout
     const [perfil, setPerfil] = useState(null);
     const [erro, setErro] = useState('');
 
@@ -25,12 +27,26 @@ const PerfilMonitor = () => {
         if (id) fetchPerfil();
     }, [id]);
 
+    const handleLogout = () => {
+        logout(); // Chama a função de logout do contexto
+    };
+
     if (erro) return <p style={{ color: 'red' }}>{erro}</p>;
     if (!perfil) return <p>A carregar perfil...</p>;
 
     return (
         <div>
-            <h2>Dashboard do Monitor</h2>
+            {/* 👇 3. Adicione o botão de logout */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2>Dashboard do Monitor</h2>
+                <button 
+                    onClick={handleLogout} 
+                    style={{ padding: '8px 16px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                >
+                    Sair
+                </button>
+            </div>
+
             <p><strong>Nome:</strong> {perfil.nome}</p>
             <p><strong>Email:</strong> {perfil.email}</p>
 
