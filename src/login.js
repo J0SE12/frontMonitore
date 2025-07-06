@@ -154,8 +154,8 @@ const Login = () => {
       </style>
       <div style={styles.page}>
         <div style={styles.leftPanel} className="left-panel-responsive">
-          <h1 style={styles.leftTitle}>Faça Login</h1>
-          <p style={styles.leftSubtitle}>E entre para o nosso time!</p>
+          <h1 style={styles.leftTitle}>Monitore.Me</h1>
+          
           {/* Aqui poderia entrar uma ilustração SVG no futuro */}
         </div>
         <div style={styles.rightPanel}>
