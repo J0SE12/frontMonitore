@@ -5,8 +5,9 @@ import { useAuth } from "./AuthContext"; // 👈 1. Importe o useAuth
 
 // 👇 IMPORTE OS COMPONENTES QUE VOCÊ JÁ TEM
 // (Corrigi os nomes dos ficheiros para serem mais consistentes)
-import PaginaAulas from "./PaginaAulas"; 
+import PaginaAulas from "./aulasaluno";
 import PaginaNotificacoes from "./PaginaNotificacoes";
+
 
 const PerfilAluno = () => {
   const { id } = useParams();
