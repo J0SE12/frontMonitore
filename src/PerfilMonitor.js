@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPerfilMonitor } from './services/api';
-import { useAuth } from './AuthContext'; // 👈 1. Importe o useAuth
+import Layout from './Layout'; // 👈 Importa o novo Layout
 
 // Importe os componentes de gestão
 import PaginaDisciplinas from './DisciplinasMonitor';
@@ -9,9 +9,16 @@ import PaginaSalas from './SalasMonitor';
 import PaginaAvaliacoes from './AvaliacoesMonitor';
 import ControlePresenca from './ControlePresenca';
 
+const cardStyle = {
+  backgroundColor: '#1f2937',
+  borderRadius: '0.75rem',
+  padding: '1.5rem',
+  marginBottom: '2rem',
+  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)',
+};
+
 const PerfilMonitor = () => {
     const { id } = useParams();
-    const { logout } = useAuth(); // 👈 2. Obtenha a função de logout
     const [perfil, setPerfil] = useState(null);
     const [erro, setErro] = useState('');
 
@@ -27,41 +34,35 @@ const PerfilMonitor = () => {
         if (id) fetchPerfil();
     }, [id]);
 
-    const handleLogout = () => {
-        logout(); // Chama a função de logout do contexto
-    };
-
-    if (erro) return <p style={{ color: 'red' }}>{erro}</p>;
-    if (!perfil) return <p>A carregar perfil...</p>;
+    if (erro) return <Layout pageTitle="Erro"><p style={{ color: 'red' }}>{erro}</p></Layout>;
+    if (!perfil) return <Layout pageTitle="A carregar..."><p>A carregar perfil...</p></Layout>;
 
     return (
-        <div>
-            {/* 👇 3. Adicione o botão de logout */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2>Dashboard do Monitor</h2>
-                <button 
-                    onClick={handleLogout} 
-                    style={{ padding: '8px 16px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-                >
-                    Sair
-                </button>
+        <Layout pageTitle={`Dashboard de ${perfil.nome}`}>
+            <div style={cardStyle}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                    Minhas Informações
+                </h2>
+                <p><strong>Nome:</strong> {perfil.nome}</p>
+                <p><strong>Email:</strong> {perfil.email}</p>
             </div>
 
-            <p><strong>Nome:</strong> {perfil.nome}</p>
-            <p><strong>Email:</strong> {perfil.email}</p>
-
-            <hr style={{ margin: '20px 0' }} />
-            <ControlePresenca />
-
-            <hr style={{ margin: '20px 0' }} />
-            <PaginaDisciplinas monitorId={id} />
-
-            <hr style={{ margin: '20px 0' }} />
-            <PaginaSalas />
+            <div style={cardStyle}>
+                <ControlePresenca />
+            </div>
             
-            <hr style={{ margin: '20px 0' }} />
-            <PaginaAvaliacoes monitorId={id} />
-        </div>
+            <div style={cardStyle}>
+                <PaginaDisciplinas monitorId={id} />
+            </div>
+            
+            <div style={cardStyle}>
+                <PaginaSalas />
+            </div>
+            
+            <div style={cardStyle}>
+                <PaginaAvaliacoes monitorId={id} />
+            </div>
+        </Layout>
     );
 };
 

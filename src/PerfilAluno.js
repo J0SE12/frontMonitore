@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getPerfilAluno } from "./services/api";
-import { useAuth } from "./AuthContext"; // 👈 1. Importe o useAuth
+import Layout from './Layout'; // 👈 Importa o novo Layout
 
-// 👇 IMPORTE OS COMPONENTES QUE VOCÊ JÁ TEM
-// (Corrigi os nomes dos ficheiros para serem mais consistentes)
+// Importe os componentes filhos
 import PaginaAulas from "./aulasaluno";
 import PaginaNotificacoes from "./notificacoesaluno";
 
+// Estilos para os cartões
+const cardStyle = {
+  backgroundColor: '#1f2937',
+  borderRadius: '0.75rem',
+  padding: '1.5rem',
+  marginBottom: '2rem',
+  boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)',
+};
 
 const PerfilAluno = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const { logout } = useAuth(); // 👈 2. Obtenha a função de logout do contexto
   const [perfil, setPerfil] = useState(null);
   const [erro, setErro] = useState("");
 
@@ -25,50 +30,31 @@ const PerfilAluno = () => {
         setErro(error.message);
       }
     };
-    if (id) {
-        fetchPerfil();
-    }
+    if (id) fetchPerfil();
   }, [id]);
 
-  const handleAvaliacaoClick = (monitorId) => {
-    navigate(`/avaliacao/${monitorId}`);
-  };
-
-  const handleLogout = () => {
-    logout(); // Chama a função de logout do contexto
-  };
-
-  if (erro) return <p style={{ color: "red" }}>{erro}</p>;
-  if (!perfil) return <p>Carregando perfil...</p>;
+  if (erro) return <Layout pageTitle="Erro"><p style={{ color: "red" }}>{erro}</p></Layout>;
+  if (!perfil) return <Layout pageTitle="A carregar..."><p>A carregar perfil...</p></Layout>;
 
   return (
-    <div>
-      {/* 👇 3. Adicione o botão de logout */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Dashboard do Aluno</h2>
-        <button 
-            onClick={handleLogout} 
-            style={{ padding: '8px 16px', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-        >
-            Sair
-        </button>
+    <Layout pageTitle={`Dashboard de ${perfil.nome}`}>
+      <div style={cardStyle}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+          Minhas Informações
+        </h2>
+        <p><strong>Nome:</strong> {perfil.nome}</p>
+        <p><strong>Email:</strong> {perfil.email}</p>
+        <p><strong>Papel:</strong> {perfil.papel}</p>
+      </div>
+
+      <div style={cardStyle}>
+        <PaginaAulas alunoId={id} />
       </div>
       
-      <p><strong>Nome:</strong> {perfil.nome}</p>
-      <p><strong>Email:</strong> {perfil.email}</p>
-      
-      {/* Exemplo de botão para avaliar um monitor específico */}
-      <button onClick={() => handleAvaliacaoClick(1)}>Avaliar Monitor ID 1</button>
-      
-      <hr style={{ margin: '20px 0' }} />
-      
-      {/* RENDERIZE OS OUTROS COMPONENTES AQUI, passando o ID do aluno */}
-      <PaginaNotificacoes alunoId={id} />
-      
-      <hr style={{ margin: '20px 0' }} />
-
-      <PaginaAulas alunoId={id} />
-    </div>
+      <div style={cardStyle}>
+        <PaginaNotificacoes alunoId={id} />
+      </div>
+    </Layout>
   );
 };
 
