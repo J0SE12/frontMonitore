@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getPerfilMonitor } from './services/api'; // Importa a função do nosso serviço
+import { getPerfilMonitor } from './services/api';
 
-// Importe os componentes de gestão que serão exibidos no dashboard
+// Importe os componentes de gestão
 import PaginaDisciplinas from './DisciplinasMonitor';
 import PaginaSalas from './SalasMonitor';
 import PaginaAvaliacoes from './AvaliacoesMonitor';
@@ -16,17 +16,13 @@ const PerfilMonitor = () => {
     useEffect(() => {
         const fetchPerfil = async () => {
             try {
-                // Usa a chamada de API real para buscar os dados do monitor
                 const data = await getPerfilMonitor(id);
                 setPerfil(data);
             } catch (error) {
                 setErro(error.message || 'Erro ao carregar perfil do monitor.');
             }
         };
-
-        if (id) {
-            fetchPerfil();
-        }
+        if (id) fetchPerfil();
     }, [id]);
 
     if (erro) return <p style={{ color: 'red' }}>{erro}</p>;

@@ -1,9 +1,9 @@
+// A URL base da sua API publicada no Render
 const BASE_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:9000';
 
-// Função auxiliar central que fará todas as chamadas
+// Função auxiliar central que lida com todas as requisições
 const apiService = async (endpoint, options = {}) => {
   const { body, ...customConfig } = options;
-
   const user = JSON.parse(localStorage.getItem('user'));
   const token = user?.token;
 
@@ -15,10 +15,7 @@ const apiService = async (endpoint, options = {}) => {
   const config = {
     method: body ? 'POST' : 'GET',
     ...customConfig,
-    headers: {
-      ...headers,
-      ...customConfig.headers,
-    },
+    headers: { ...headers, ...customConfig.headers },
   };
 
   if (body) {
@@ -38,21 +35,22 @@ const apiService = async (endpoint, options = {}) => {
   }
 };
 
-// Funções para endpoints de Aluno
+// === Funções de Autenticação e Utilizadores ===
 export const loginUser = (credentials) => apiService('/usuarios/login', { body: credentials });
+export const registerUser = (userData) => apiService('/usuarios/register', { body: userData });
+export const getAllAlunos = () => apiService('/usuarios/alunos');
+
+// === Funções para o Perfil do Aluno ===
 export const getPerfilAluno = (id) => apiService(`/aluno/perfil/${id}`);
 export const getAulasDoAluno = (id) => apiService(`/aluno/aulas/${id}`);
 export const getNotificacoesDoAluno = (id) => apiService(`/aluno/notificacoes/${id}`);
 export const postAvaliacao = (avaliacaoData) => apiService('/aluno/avaliacao', { body: avaliacaoData });
-export const getAllAlunos = () => apiService('/usuarios/alunos');
 
-// Funções para endpoints de Monitor
+// === Funções para o Perfil do Monitor ===
 export const getPerfilMonitor = (id) => apiService(`/api/monitor/perfil/${id}`);
-export const getDisciplinas = () => apiService(`/api/monitor/disciplinas`);
-export const getSalas = () => apiService(`/api/monitor/salas`);
-export const getAvaliacoesDoMonitor = (id) => apiService(`/api/monitor/avaliacoes/${id}`);
-export const getPresencasDoAluno = (alunoId) => apiService(`/api/monitor/presencas/${alunoId}`);
-export const postPresenca = (presencaData) => apiService('/api/monitor/presencas/criar', { body: presencaData });
+export const getDisciplinas = () => apiService('/api/monitor/disciplinas');
 export const criarDisciplina = (data) => apiService('/api/monitor/disciplinas/criar', { body: data });
+export const getSalas = () => apiService('/api/monitor/salas');
 export const criarSala = (data) => apiService('/api/monitor/salas/criar', { body: data });
-export const criarAvaliacao = (data) => apiService('/api/monitor/avaliacoes/criar', { body: data });
+export const getAvaliacoesDoMonitor = (id) => apiService(`/api/monitor/avaliacoes/${id}`);
+export const postPresenca = (presencaData) => apiService('/api/monitor/presencas/criar', { body: presencaData });
