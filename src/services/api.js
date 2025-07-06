@@ -44,6 +44,7 @@ export const getPerfilAluno = (id) => apiService(`/aluno/perfil/${id}`);
 export const getAulasDoAluno = (id) => apiService(`/aluno/aulas/${id}`);
 export const getNotificacoesDoAluno = (id) => apiService(`/aluno/notificacoes/${id}`);
 export const postAvaliacao = (avaliacaoData) => apiService('/aluno/avaliacao', { body: avaliacaoData });
+export const getAllAlunos = () => apiService('/usuarios/alunos');
 
 // Funções para endpoints de Monitor
 export const getPerfilMonitor = (id) => apiService(`/api/monitor/perfil/${id}`);

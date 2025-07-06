@@ -1,10 +1,11 @@
+// src/ControlePresenca.js
 import React, { useEffect, useState } from "react";
-// Supondo que estas funções existam no seu services/api.js
-import { getDisciplinas, postPresenca } from './services/api'; 
+// Importa as funções de API necessárias
+import { getDisciplinas, getAllAlunos, postPresenca } from './services/api'; 
 
 const ControlePresenca = () => {
-  const [aulas, setAulas] = useState([]); // Usaremos disciplinas para representar aulas por enquanto
-  const [alunos, setAlunos] = useState([]); // Precisaria de uma rota para buscar todos os alunos
+  const [aulas, setAulas] = useState([]);
+  const [alunos, setAlunos] = useState([]); // Agora será preenchido com dados reais
   const [aulaId, setAulaId] = useState("");
   const [alunoId, setAlunoId] = useState("");
   const [presente, setPresente] = useState(true);
@@ -13,10 +14,13 @@ const ControlePresenca = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const aulasData = await getDisciplinas(); 
+        // Busca os dados das aulas e dos alunos em paralelo
+        const [aulasData, alunosData] = await Promise.all([
+          getDisciplinas(),
+          getAllAlunos() 
+        ]);
         setAulas(aulasData);
-         const alunosData = await getPerfilAluno(); // Você precisaria criar este serviço e endpoint
-         setAlunos(alunosData);
+        setAlunos(alunosData);
       } catch (error) {
         console.error("Erro ao buscar dados para presença:", error);
         setMensagem("Não foi possível carregar aulas e alunos.");
@@ -36,7 +40,7 @@ const ControlePresenca = () => {
       const response = await postPresenca({ aulaId, alunoId, presente });
       setMensagem(response.message);
     } catch (error) {
-      setMensagem(error.message || "Erro ao registrar presença.");
+      setMensagem(error.message || "Erro ao registar presença.");
     }
   };
 
@@ -44,35 +48,52 @@ const ControlePresenca = () => {
     <div>
       <h2>Controle de Presença</h2>
       <form onSubmit={registrarPresenca}>
-        <label>
+        <label htmlFor="aula-select">
           Selecione a Aula:
-          <select value={aulaId} onChange={(e) => setAulaId(e.target.value)} required>
-            <option value="">Escolha uma aula</option>
-            {aulas.map((aula) => (
-              <option key={aula.id_dsc} value={aula.id_dsc}>{aula.nome}</option>
-            ))}
-          </select>
         </label>
+        <select
+          id="aula-select"
+          value={aulaId}
+          onChange={(e) => setAulaId(e.target.value)}
+          required
+        >
+          <option value="">Escolha uma aula</option>
+          {aulas.map((aula) => (
+            <option key={aula.id_dsc} value={aula.id_dsc}>
+              {aula.nome}
+            </option>
+          ))}
+        </select>
         <br />
-        <label>
+        <label htmlFor="aluno-select">
           Selecione o Aluno:
-          <select value={alunoId} onChange={(e) => setAlunoId(e.target.value)} required>
-            <option value="">Escolha um aluno</option>
-            {/* Esta parte precisa de uma lista real de alunos vinda da API */}
-            <option value="1">Aluno 1 (Exemplo)</option>
-            <option value="6">Jose (Exemplo)</option>
-          </select>
         </label>
+        <select
+          id="aluno-select"
+          value={alunoId}
+          onChange={(e) => setAlunoId(e.target.value)}
+          required
+        >
+          <option value="">Escolha um aluno</option>
+          {/* O seletor agora é preenchido com os alunos reais */}
+          {alunos.map((aluno) => (
+            <option key={aluno.id} value={aluno.id}>
+              {aluno.nome}
+            </option>
+          ))}
+        </select>
         <br />
-        <label>
-          Presente:<input
-            type="checkbox"
-            checked={presente}
-            onChange={(e) => setPresente(e.target.checked)}
-          />
+        <label htmlFor="presente-checkbox">
+          Presente:
         </label>
+        <input
+          id="presente-checkbox"
+          type="checkbox"
+          checked={presente}
+          onChange={(e) => setPresente(e.target.checked)}
+        />
         <br />
-        <button type="submit">Registrar Presença</button>
+        <button type="submit">Registar Presença</button>
         {mensagem && <p>{mensagem}</p>}
       </form>
     </div>
