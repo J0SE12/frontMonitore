@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { getPerfilAluno } from "./services/api";
 import Layout from './Layout'; 
 
-const cardStyle = { /* ... (estilos do cartão mantidos) ... */ };
+const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '2rem' };
 
 const PerfilAluno = () => {
   const { id } = useParams();

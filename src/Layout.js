@@ -50,8 +50,13 @@ const styles = {
 };
 
 const Layout = ({ pageTitle, navLinks = [], children }) => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth(); // Pega o utilizador completo
   const navigate = useNavigate();
+
+  // Determina o caminho para a página inicial com base no papel do utilizador
+  const homePath = user?.papel === 'aluno' 
+    ? `/aluno/perfil/${user.id}` 
+    : `/monitor/perfil/${user.id}`;
 
   return (
     <div style={styles.page}>
@@ -60,15 +65,28 @@ const Layout = ({ pageTitle, navLinks = [], children }) => {
           <h1 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', marginRight: '1rem' }}>
             {pageTitle || 'Monitore.me'}
           </h1>
-          {/* Renderiza os botões de navegação */}
+          
+          {/* Botão para voltar à página inicial */}
+          <button 
+              onClick={() => navigate(homePath)}
+              style={styles.navButton}
+              onMouseOver={e => e.currentTarget.style.backgroundColor = '#374151'}
+              onFocus={e => e.currentTarget.style.backgroundColor = '#374151'}
+              onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}
+              onBlur={e => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              Página Inicial
+          </button>
+
+          {/* Renderiza os botões de navegação específicos da página */}
           {navLinks.map(link => (
             <button 
               key={link.path} 
               onClick={() => navigate(link.path)}
               style={styles.navButton}
               onMouseOver={e => e.currentTarget.style.backgroundColor = '#374151'}
-              onFocus={e => e.currentTarget.style.backgroundColor = '#374151'}
               onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}
+              onFocus={e => e.currentTarget.style.backgroundColor = '#374151'}
               onBlur={e => e.currentTarget.style.backgroundColor = 'transparent'}
             >
               {link.label}
@@ -79,8 +97,8 @@ const Layout = ({ pageTitle, navLinks = [], children }) => {
           onClick={logout} 
           style={styles.logoutButton}
           onMouseOver={e => e.currentTarget.style.backgroundColor = '#dc2626'}
-          onFocus={e => e.currentTarget.style.backgroundColor = '#dc2626'}
           onMouseOut={e => e.currentTarget.style.backgroundColor = '#ef4444'}
+          onFocus={e => e.currentTarget.style.backgroundColor = '#dc2626'}
           onBlur={e => e.currentTarget.style.backgroundColor = '#ef4444'}
         >
           Sair
@@ -103,10 +121,5 @@ Layout.propTypes = {
   children: PropTypes.node,
 };
 
-Layout.defaultProps = {
-  pageTitle: 'Monitore.me',
-  navLinks: [],
-  children: null,
-};
-export { Layout as default }; // Exporta o Layout como padrão
-export { styles as layoutStyles }; // Exporta os estilos para uso externo, se necessário
+export default Layout;
+
