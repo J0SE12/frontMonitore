@@ -1,44 +1,45 @@
-// Em PaginaNotificacoes.js
-import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { getNotificacoesDoAluno } from './services/api'; 
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getNotificacoesDoAluno } from './services/api';
 
-function PaginaNotificacoes({ alunoId }) {
+const PaginaNotificacoes = () => {
+  const { id } = useParams(); // Obter o ID do aluno diretamente da URL
   const [notificacoes, setNotificacoes] = useState([]);
-  const [error, setError] = useState(null); 
-
-  const fetchNotificacoes = useCallback(async () => {
-    setError(null); // Limpa erros anteriores
-    try {
-      const data = await getNotificacoesDoAluno(alunoId);
-      setNotificacoes(data);
-    } catch (err) {
-      setError(err.message || "Erro ao buscar notificações.");
-    }
-  }, [alunoId]);
+  const [erro, setErro] = useState('');
 
   useEffect(() => {
-    fetchNotificacoes();
-  }, [fetchNotificacoes]);
+    if (id) {
+      const fetchNotificacoes = async () => {
+        try {
+          const data = await getNotificacoesDoAluno(id);
+          setNotificacoes(data);
+        } catch (error) {
+          setErro(error.message || 'Erro ao carregar as notificações.');
+        }
+      };
+      fetchNotificacoes();
+    }
+  }, [id]);
+
+  if (erro) return <p style={{ color: '#f87171' }}>{erro}</p>;
 
   return (
     <div>
-      <h1>Minhas Notificações</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ul>
-        {!error && notificacoes.length > 0 ? (
-          notificacoes.map((notificacao) => (
-            <li key={notificacao.id}>{notificacao.mensagem}</li>
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>Minhas Notificações</h2>
+      {notificacoes.length > 0 ? (
+        <ul>
+          {notificacoes.map((notif) => (
+            <li key={notif.id} style={{ margin: '10px 0', padding: '10px', backgroundColor: '#374151', borderRadius: '6px' }}>
+              {notif.mensagem}
+            </li>
           ))
-        ) : (
-          !error && <li>Nenhuma notificação encontrada.</li>
-        )}
-      </ul>
+        }
+        </ul>
+      ) : (
+        <p>Nenhuma notificação nova.</p>
+      )}
     </div>
   );
-}
-PaginaNotificacoes.propTypes = {
-  alunoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default PaginaNotificacoes;

@@ -1,45 +1,45 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { getAulasDoAluno } from './services/api'; // 👈 Use o serviço
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom'; // 1. Importar o hook
+import { getAulasDoAluno } from './services/api'; // 2. Usar o serviço de API
 
-function PaginaAulas({ alunoId }) {
+const PaginaAulas = () => {
+  const { id } = useParams(); // 3. Obter o ID do aluno diretamente da URL
   const [aulas, setAulas] = useState([]);
-  const [error, setError] = useState(null); // 👈 Estado para erro
-
-  const fetchAulas = useCallback(async () => {
-    setError(null); // Limpa erros anteriores
-    try {
-      const data = await getAulasDoAluno(alunoId);
-      setAulas(data);
-    } catch (err) {
-      setError(err.message || "Erro ao buscar aulas.");
-    }
-  }, [alunoId]);
+  const [erro, setErro] = useState('');
 
   useEffect(() => {
-    fetchAulas();
-  }, [fetchAulas]);
+    // 4. Garantir que a busca só acontece se houver um ID
+    if (id) {
+      const fetchAulas = async () => {
+        try {
+          const data = await getAulasDoAluno(id);
+          setAulas(data);
+        } catch (error) {
+          setErro(error.message || 'Erro ao carregar as aulas.');
+        }
+      };
+      fetchAulas();
+    }
+  }, [id]); // A dependência agora é o ID da URL
+
+  if (erro) return <p style={{ color: '#f87171' }}>{erro}</p>;
 
   return (
     <div>
-      <h1>Minhas Aulas</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <ul>
-        {!error && aulas.length > 0 ? (
-          aulas.map((aula) => ( // Supondo que aula tenha um ID único
-            <li key={aula.id_aula || aula.id}> 
-              {`${aula.sala_nome} - ${aula.disciplina} (${aula.dia_da_semana}, ${aula.hora_inicio} - ${aula.hora_fim})`}
+      <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>Minhas Aulas</h2>
+      {aulas.length > 0 ? (
+        <ul>
+          {aulas.map((aula) => (
+            <li key={aula.id_sala || aula.id_aula} style={{ margin: '10px 0', padding: '10px', backgroundColor: '#374151', borderRadius: '6px' }}>
+              {aula.disciplina} - {aula.dia_da_semana} às {aula.hora_inicio} ({aula.localizacao})
             </li>
-          ))
-        ) : (
-          !error && <li>Nenhuma aula encontrada.</li>
-        )}
-      </ul>
+          ))}
+        </ul>
+      ) : (
+        <p>Nenhuma aula encontrada.</p>
+      )}
     </div>
   );
-}
-PaginaAulas.propTypes = {
-  alunoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 export default PaginaAulas;
