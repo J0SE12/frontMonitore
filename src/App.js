@@ -7,7 +7,7 @@ import PerfilAluno from "./PerfilAluno";
 import PerfilMonitor from './PerfilMonitor';
 import AvaliacaoAluno from "./avaliacaoaluno";
 import PaginaAulas from "./aulasaluno";
-import PaginaNotificacoes from "./NotificacoesAluno";
+import PaginaNotificacoes from "./notificacoesaluno";
 import PaginaDisciplinas from './DisciplinasMonitor';
 import PaginaSalas from './SalasMonitor';
 import ControlePresenca from './ControlePresenca';
