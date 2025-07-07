@@ -1,4 +1,3 @@
-// Em App.js
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
@@ -8,7 +7,7 @@ import PerfilAluno from "./PerfilAluno";
 import PerfilMonitor from './PerfilMonitor';
 import AvaliacaoAluno from "./avaliacaoaluno";
 import PaginaAulas from "./aulasaluno";
-import PaginaNotificacoes from "./notificacoesaluno";
+import PaginaNotificacoes from "./NotificacoesAluno";
 import PaginaDisciplinas from './DisciplinasMonitor';
 import PaginaSalas from './SalasMonitor';
 import ControlePresenca from './ControlePresenca';
@@ -31,16 +30,16 @@ class App extends Component {
 
             {/* Rotas de Aluno */}
             <Route path="/aluno/perfil/:id" element={<ProtectedRoute><PerfilAluno /></ProtectedRoute>} />
-            <Route path="/aluno/aulas/:id" element={<ProtectedRoute><Layout pageTitle="Minhas Aulas"><PaginaAulas /></Layout></ProtectedRoute>} />
-            <Route path="/aluno/notificacoes/:id" element={<ProtectedRoute><Layout pageTitle="Minhas Notificações"><PaginaNotificacoes /></Layout></ProtectedRoute>} />
-            <Route path="/aluno/avaliar" element={<ProtectedRoute><Layout pageTitle="Avaliar Monitor"><AvaliacaoAluno /></Layout></ProtectedRoute>} />
+            <Route path="/aluno/aulas/:id" element={<ProtectedRoute><Layout><PaginaAulas /></Layout></ProtectedRoute>} />
+            <Route path="/aluno/notificacoes/:id" element={<ProtectedRoute><Layout><PaginaNotificacoes /></Layout></ProtectedRoute>} />
+            <Route path="/aluno/avaliar" element={<ProtectedRoute><Layout><AvaliacaoAluno /></Layout></ProtectedRoute>} />
 
             {/* Rotas de Monitor */}
             <Route path="/monitor/perfil/:id" element={<ProtectedRoute><PerfilMonitor /></ProtectedRoute>} />
-            <Route path="/monitor/disciplinas" element={<ProtectedRoute><Layout pageTitle="Gerir Disciplinas"><PaginaDisciplinas /></Layout></ProtectedRoute>} />
-            <Route path="/monitor/salas" element={<ProtectedRoute><Layout pageTitle="Gerir Salas"><PaginaSalas /></Layout></ProtectedRoute>} />
-            <Route path="/monitor/presenca" element={<ProtectedRoute><Layout pageTitle="Controle de Presença"><ControlePresenca /></Layout></ProtectedRoute>} />
-            <Route path="/monitor/avaliacoes/:id" element={<ProtectedRoute><Layout pageTitle="Minhas Avaliações"><PaginaAvaliacoes /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/disciplinas" element={<ProtectedRoute><Layout><PaginaDisciplinas /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/salas" element={<ProtectedRoute><Layout><PaginaSalas /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/presenca" element={<ProtectedRoute><Layout><ControlePresenca /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/avaliacoes/:id" element={<ProtectedRoute><Layout><PaginaAvaliacoes /></Layout></ProtectedRoute>} />
             
             {/* Rota "Catch-all" */}
             <Route path="*" element={<Navigate to="/login" replace />} />

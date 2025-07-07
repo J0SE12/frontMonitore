@@ -3,20 +3,13 @@ import { useParams } from 'react-router-dom';
 import { getPerfilMonitor } from './services/api';
 import Layout from './Layout';
 
-const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '2rem' };
+const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', color: '#d1d5db' };
+const cardTitleStyle = { fontSize: '1.5rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' };
 
 const PerfilMonitor = () => {
     const { id } = useParams();
     const [perfil, setPerfil] = useState(null);
     const [erro, setErro] = useState('');
-
-    // Links de navegação específicos para o Monitor
-    const monitorNavLinks = [
-      { path: `/monitor/disciplinas`, label: 'Gerir Disciplinas' },
-      { path: `/monitor/salas`, label: 'Gerir Salas' },
-      { path: `/monitor/presenca`, label: 'Controle de Presença' },
-      { path: `/monitor/avaliacoes/${id}`, label: 'Ver Avaliações' }
-    ];
 
     useEffect(() => {
         const fetchPerfil = async () => {
@@ -30,18 +23,21 @@ const PerfilMonitor = () => {
         if (id) fetchPerfil();
     }, [id]);
 
-    if (erro) return <Layout pageTitle="Erro"><p style={{ color: 'red' }}>{erro}</p></Layout>;
-    if (!perfil) return <Layout pageTitle="A carregar..."><p>A carregar perfil...</p></Layout>;
+    if (erro) return <Layout><p style={{ color: 'red' }}>{erro}</p></Layout>;
+    if (!perfil) return <Layout><p>A carregar perfil...</p></Layout>;
 
     return (
-        <Layout pageTitle={`Dashboard de ${perfil.nome}`} navLinks={monitorNavLinks}>
+        <Layout>
+            <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: 'white', marginBottom: '2rem' }}>
+                Dashboard do Monitor
+            </h1>
             <div style={cardStyle}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white' }}>
+                <h2 style={cardTitleStyle}>
                     Minhas Informações
                 </h2>
+                <p><strong>Nome:</strong> {perfil.nome}</p>
                 <p><strong>Email:</strong> {perfil.email}</p>
             </div>
-             {/* O conteúdo das outras páginas (disciplinas, salas) será renderizado pelas suas próprias rotas */}
         </Layout>
     );
 };
