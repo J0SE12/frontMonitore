@@ -12,6 +12,8 @@ import PaginaDisciplinas from './DisciplinasMonitor';
 import PaginaSalas from './SalasMonitor';
 import ControlePresenca from './ControlePresenca';
 import PaginaAvaliacoes from './AvaliacoesMonitor';
+import GerenciarAulas from './GerenciarAulas'
+import BuscarAulas from './BuscarAulas'
 
 // Componentes de Lógica
 import { AuthProvider } from "./AuthContext";
@@ -40,6 +42,8 @@ class App extends Component {
             <Route path="/monitor/salas" element={<ProtectedRoute><Layout><PaginaSalas /></Layout></ProtectedRoute>} />
             <Route path="/monitor/presenca" element={<ProtectedRoute><Layout><ControlePresenca /></Layout></ProtectedRoute>} />
             <Route path="/monitor/avaliacoes/:id" element={<ProtectedRoute><Layout><PaginaAvaliacoes /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/gerenciar-aulas" element={<ProtectedRoute><Layout><GerenciarAulas /></Layout></ProtectedRoute>} />
+            <Route path="/monitor/buscar-aulas" element={<ProtectedRoute><Layout><BuscarAulas /></Layout></ProtectedRoute>} />
             
             {/* Rota "Catch-all" */}
             <Route path="*" element={<Navigate to="/login" replace />} />

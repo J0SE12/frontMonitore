@@ -53,4 +53,21 @@ export const criarDisciplina = (data) => apiService('/api/monitor/disciplinas/cr
 export const getSalas = () => apiService('/api/monitor/salas');
 export const criarSala = (data) => apiService('/api/monitor/salas/criar', { body: data });
 export const getAvaliacoesDoMonitor = (id) => apiService(`/api/monitor/avaliacoes/${id}`);
+
 export const postPresenca = (presencaData) => apiService('/api/monitor/presencas/criar', { body: presencaData });
+
+// --- Funções para o Fluxo de Aulas ---
+
+// Para o monitor criar uma nova aula
+export const criarAula = (aulaData) => apiService('/aulas/criar', { body: aulaData });
+
+// Para o aluno ver todas as aulas disponíveis
+export const getAllAulas = () => apiService('/aulas');
+
+// Para o aluno se inscrever numa aula
+export const inscreverAluno = (inscricaoData) => apiService('/aulas/inscrever', { body: inscricaoData });
+
+// Funções que podem ser necessárias para os formulários
+export const getMinhasDisciplinas = (monitorId) => apiService(`/api/monitor/disciplinas/${monitorId}`); // Supondo que esta rota exista
+export const getHorariosDisponiveis = () => apiService('/horarios'); // Supondo que esta rota exista
+export const getHorariosPorDisciplina = (disciplinaId) => apiService(`/horarios/disciplinas/${disciplinaId}`); // Supondo que esta rota exista
