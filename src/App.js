@@ -8,6 +8,7 @@ import PerfilMonitor from './PerfilMonitor';
 import AvaliacaoAluno from "./avaliacaoaluno";
 import PaginaAulas from "./aulasaluno";
 import PaginaNotificacoes from "./notificacoesaluno";
+import './App.css'; // Importando o CSS para estilização
 // 👇 Importações para as novas páginas
 import PaginaDisciplinas from './DisciplinasMonitor';
 import PaginaSalas from './SalasMonitor';
