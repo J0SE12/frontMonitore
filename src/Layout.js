@@ -15,7 +15,73 @@ const SearchIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" heig
 const PlusCircleIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M8 12h8" /><path d="M12 8v8" /></svg>;
 
 
-const styles = { /* ... (os seus estilos são mantidos aqui) ... */ };
+const styles = {
+  layout: {
+    display: 'flex',
+    minHeight: '100vh',
+    backgroundColor: '#111827',
+  },
+  sidebar: {
+    width: '260px',
+    backgroundColor: '#1f2937',
+    padding: '1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    borderRight: '1px solid #374151',
+  },
+  sidebarTitle: {
+    fontSize: '1.5rem',
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: '2rem',
+    textAlign: 'center',
+  },
+  nav: {
+    flexGrow: 1,
+  },
+  navLink: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '0.75rem 1rem',
+    color: '#9ca3af',
+    borderRadius: '0.5rem',
+    textDecoration: 'none',
+    marginBottom: '0.5rem',
+    transition: 'background-color 0.2s, color 0.2s',
+    fontWeight: '500',
+    cursor: 'pointer',
+    width: '100%',
+    border: 'none',
+    backgroundColor: 'transparent',
+    textAlign: 'left',
+  },
+  navLinkActive: {
+    backgroundColor: '#374151',
+    color: 'white',
+  },
+  navIcon: {
+    marginRight: '1rem',
+  },
+  logoutButton: {
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+    padding: '0.75rem 1rem',
+    color: '#f87171',
+    borderRadius: '0.5rem',
+    fontWeight: '500',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s, color 0.2s',
+    border: 'none',
+    backgroundColor: 'transparent',
+    textAlign: 'left',
+  },
+  mainContent: {
+    flex: 1,
+    padding: '2rem 3rem',
+    overflowY: 'auto',
+  },
+};
 
 const Layout = ({ children }) => {
   const { user, logout } = useAuth();
@@ -39,37 +105,34 @@ const Layout = ({ children }) => {
         { path: `/monitor/avaliacoes/${user.id}`, label: 'Ver Avaliações', icon: <StarIcon /> },
       ];
 
+  const NavButton = ({ path, label, icon }) => (
+    <button
+      type="button"
+      onClick={() => navigate(path)}
+      style={{ ...styles.navLink, ...(location.pathname === path && styles.navLinkActive) }}
+      onMouseOver={e => e.currentTarget.style.backgroundColor = '#374151'}
+      onMouseOut={e => e.currentTarget.style.backgroundColor = location.pathname === path ? '#374151' : 'transparent'}
+    >
+      <span style={styles.navIcon}>{icon}</span> {label}
+    </button>
+  );
+
   return (
     <div style={styles.layout}>
       <aside style={styles.sidebar}>
         <h1 style={styles.sidebarTitle}>Monitore.me</h1>
         <nav style={styles.nav}>
-          {/* Botão Página Inicial */}
-          <button
-            type="button"
-            onClick={() => navigate(homePath)}
-            style={{ ...styles.navLink, ...(location.pathname === homePath && styles.navLinkActive) }}
-            // ... (outros atributos e eventos)
-          >
-            <span style={styles.navIcon}><HomeIcon /></span> Página Inicial
-          </button>
-          
-          {/* Links Dinâmicos */}
+          <NavButton path={homePath} label="Página Inicial" icon={<HomeIcon />} />
           {navLinks.map(link => (
-            <button
-              key={link.path}
-              type="button"
-              onClick={() => navigate(link.path)}
-              style={{ ...styles.navLink, ...(location.pathname === link.path && styles.navLinkActive) }}
-              // ... (outros atributos e eventos)
-            >
-              <span style={styles.navIcon}>{link.icon}</span> {link.label}
-            </button>
+            <NavButton key={link.path} path={link.path} label={link.label} icon={link.icon} />
           ))}
         </nav>
-        
-        {/* Botão Sair */}
-        <button onClick={logout} style={styles.logoutButton} /* ... (eventos) */ >
+        <button 
+          onClick={logout} 
+          style={styles.logoutButton}
+          onMouseOver={e => e.currentTarget.style.backgroundColor = '#374151'}
+          onMouseOut={e => e.currentTarget.style.backgroundColor = 'transparent'}
+        >
           <span style={styles.navIcon}><LogoutIcon /></span> Sair
         </button>
       </aside>
@@ -84,7 +147,8 @@ Layout.propTypes = {
   children: PropTypes.node
 };
 
-export default Layout;
 Layout.defaultProps = {
   children: null
 };
+
+export default Layout;
