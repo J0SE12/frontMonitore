@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { getAvaliacoesDoMonitor } from './services/api';
 
+const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', color: '#d1d5db', marginBottom: '1rem' };
+const cardTitleStyle = { fontSize: '1.25rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' };
+
 const PaginaAvaliacoes = ({ monitorId }) => {
   const [avaliacoes, setAvaliacoes] = useState([]);
   const [erro, setErro] = useState('');
@@ -21,26 +24,22 @@ const PaginaAvaliacoes = ({ monitorId }) => {
   }, [monitorId]);
 
   return (
-    <div>
-      <h3>Avaliações Recebidas</h3>
-      {erro && <p style={{color: 'red'}}>{erro}</p>}
-      <ul>
-        {avaliacoes.length > 0 ? (
-          avaliacoes.map((av) => (
-            <li key={av.avaliacao_id}>
-              <strong>{av.aluno_nome}:</strong> "{av.feedback}"
+    <div style={cardStyle}>
+      <h2 style={cardTitleStyle}>Avaliações Recebidas</h2>
+      {avaliacoes.length > 0 ? (
+        <ul>
+          {avaliacoes.map((av) => (
+            <li key={av.avaliacao_id} style={{ borderBottom: '1px solid #374151', padding: '1rem 0' }}>
+              <p><strong>{av.aluno_nome}:</strong></p>
+              <p style={{ marginTop: '0.5rem', fontStyle: 'italic' }}>"{av.feedback}"</p>
             </li>
-          ))
-        ) : (
-          <li>Nenhuma avaliação recebida.</li>
-        )}
-      </ul>
+          ))}
+        </ul>
+      ) : (
+        <p>Nenhuma avaliação recebida até ao momento.</p>
+      )}
     </div>
-  )
-};
-
-PaginaAvaliacoes.propTypes = {
-  monitorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
+  );
 };
 
 export default PaginaAvaliacoes;
