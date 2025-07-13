@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from 'prop-types';
-import { getDisciplinas, criarDisciplina } from './services/api'; // Usando o serviço de API
+import { useAuth } from './AuthContext'; // 👈 Importa o useAuth
+import { getDisciplinas, criarDisciplina } from './services/api';
 
 const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', color: '#d1d5db', marginBottom: '2rem' };
 const cardTitleStyle = { fontSize: '1.25rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' };
@@ -8,7 +8,8 @@ const inputStyle = { width: '100%', boxSizing: 'border-box', backgroundColor: '#
 const labelStyle = { fontWeight: '500', color: '#9ca3af' };
 const buttonStyle = { width: '100%', backgroundColor: '#34d399', color: '#111827', fontWeight: 'bold', padding: '0.75rem 1rem', borderRadius: '0.5rem', border: 'none', cursor: 'pointer', marginTop: '1rem' };
 
-const PaginaDisciplinas = ({ monitorId }) => {
+const PaginaDisciplinas = () => {
+  const { user } = useAuth(); // 👈 Obtém o utilizador logado
   const [disciplinas, setDisciplinas] = useState([]);
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
@@ -31,7 +32,8 @@ const PaginaDisciplinas = ({ monitorId }) => {
     e.preventDefault();
     setMensagem("");
     try {
-      await criarDisciplina({ nome, descricao, monitorId });
+      // 👇 Usa o user.id diretamente do contexto, em vez de uma prop
+      await criarDisciplina({ nome, descricao, monitorId: user.id });
       setMensagem({ type: 'success', text: "Disciplina criada com sucesso!" });
       fetchDisciplinas(); // Atualiza a lista
       setNome("");
@@ -70,10 +72,6 @@ const PaginaDisciplinas = ({ monitorId }) => {
       </div>
     </div>
   );
-};
-
-PaginaDisciplinas.propTypes = {
-    monitorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
 };
 
 export default PaginaDisciplinas;

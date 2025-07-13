@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getSalas, criarSala } from './services/api'; // Usando o serviço de API
+import { getSalas, criarSala } from './services/api';
 
 const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', color: '#d1d5db', marginBottom: '2rem' };
 const cardTitleStyle = { fontSize: '1.25rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' };
@@ -15,13 +15,12 @@ const PaginaSalas = () => {
   const [mensagem, setMensagem] = useState("");
 
   const fetchSalas = async () => {
-    try {
-      const data = await getSalas();
-      setSalas(data);
-    } catch (error) {
-      console.error("Erro ao obter salas:", error);
-      setMensagem(error.message || "Erro ao carregar salas.");
-    }
+      try {
+          const data = await getSalas();
+          setSalas(data);
+      } catch(error) {
+          setMensagem({ type: 'error', text: error.message || "Erro ao carregar salas."});
+      }
   };
 
   useEffect(() => {
@@ -33,18 +32,17 @@ const PaginaSalas = () => {
     setMensagem("");
     try {
       await criarSala({ nome, capacidade, localizacao });
-      setMensagem("Sala criada com sucesso!");
+      setMensagem({ type: 'success', text: "Sala criada com sucesso!"});
       fetchSalas(); // Atualiza a lista após a criação
-      // Limpa os campos do formulário
       setNome("");
       setCapacidade("");
       setLocalizacao("");
     } catch (error) {
-      setMensagem(error.message || "Erro ao criar sala.");
+      setMensagem({ type: 'error', text: error.message || "Erro ao criar sala."});
     }
   };
 
-   return (
+  return (
     <div>
       <div style={cardStyle}>
         <h2 style={cardTitleStyle}>Salas de Aula Cadastradas</h2>
@@ -58,7 +56,7 @@ const PaginaSalas = () => {
 
       <div style={cardStyle}>
         <h2 style={cardTitleStyle}>Criar Nova Sala</h2>
-        <form onSubmit={() => {}} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <form onSubmit={handleCriarSala} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           <div>
             <label htmlFor="nome-sala" style={labelStyle}>Nome da Sala</label>
             <input id="nome-sala" type="text" value={nome} onChange={(e) => setNome(e.target.value)} style={inputStyle} required />
@@ -72,6 +70,7 @@ const PaginaSalas = () => {
             <input id="local-sala" type="text" value={localizacao} onChange={(e) => setLocalizacao(e.target.value)} style={inputStyle} required />
           </div>
           <button type="submit" style={buttonStyle}>Criar Sala</button>
+          {mensagem && <p style={{ marginTop: '1rem', color: mensagem.type === 'error' ? '#f87171' : '#34d399' }}>{mensagem.text}</p>}
         </form>
       </div>
     </div>
