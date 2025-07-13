@@ -71,6 +71,6 @@ export const getAllAulas = () => apiService('/aulas');
 export const inscreverAluno = (inscricaoData) => apiService('/aulas/inscrever', { body: inscricaoData });
 
 // Funções que podem ser necessárias para os formulários
-export const getMinhasDisciplinas = (monitorId) => apiService(`/api/monitor/disciplinas/${monitorId}`); // Supondo que esta rota exista
+export const getMinhasDisciplinas = (monitorId) => apiService(`/api/monitor/disciplinas/${monitorId}`);
 export const getHorariosDisponiveis = () => apiService('/horarios'); // Supondo que esta rota exista
 export const getHorariosPorDisciplina = (disciplinaId) => apiService(`/horarios/disciplinas/${disciplinaId}`); // Supondo que esta rota exista

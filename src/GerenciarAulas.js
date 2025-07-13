@@ -12,15 +12,15 @@ const GerenciarAulas = () => {
     const [disciplinas, setDisciplinas] = useState([]);
     const [horarios, setHorarios] = useState([]);
     const [mensagem, setMensagem] = useState('');
-
     const [disciplinaId, setDisciplinaId] = useState('');
     const [horarioId, setHorarioId] = useState('');
     const [tituloAula, setTituloAula] = useState('');
     const [vagas, setVagas] = useState(10);
 
     useEffect(() => {
+        if (!user?.id) return;
+
         const fetchData = async () => {
-            if (!user?.id) return;
             try {
                 const [disciplinasData, horariosData] = await Promise.all([
                     getMinhasDisciplinas(user.id),
