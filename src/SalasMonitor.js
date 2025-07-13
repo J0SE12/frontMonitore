@@ -14,12 +14,11 @@ const PaginaSalas = () => {
   const [nome, setNome] = useState("");
   const [capacidade, setCapacidade] = useState("");
   const [localizacao, setLocalizacao] = useState("");
-  // INÍCIO: NOVOS ESTADOS PARA HORÁRIO
   const [diaSemana, setDiaSemana] = useState("");
   const [horaInicio, setHoraInicio] = useState("");
   const [horaFim, setHoraFim] = useState("");
-  // FIM: NOVOS ESTADOS PARA HORÁRIO
   const [mensagem, setMensagem] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const fetchSalas = async () => {
       try {
@@ -36,9 +35,9 @@ const PaginaSalas = () => {
 
   const handleCriarSala = async (e) => {
     e.preventDefault();
+    setLoading(true);
     setMensagem("");
     try {
-      // INÍCIO: ENVIANDO OS DADOS DE HORÁRIO PARA A API
       await criarSala({ 
         nome, 
         capacidade, 
@@ -47,20 +46,19 @@ const PaginaSalas = () => {
         hora_inicio: horaInicio, 
         hora_fim: horaFim 
       });
-      // FIM: ENVIANDO OS DADOS DE HORÁRIO PARA A API
       setMensagem({ type: 'success', text: "Sala e horário criados com sucesso!"});
       fetchSalas();
       setNome("");
       setCapacidade("");
       setLocalizacao("");
-      // INÍCIO: LIMPANDO OS NOVOS CAMPOS
       setDiaSemana("");
       setHoraInicio("");
       setHoraFim("");
-      // FIM: LIMPANDO OS NOVOS CAMPOS
     } catch (error) {
-      setMensagem({ type: 'error', text: error.message || "Erro ao criar sala."});
-    }
+      setMensagem({ type: 'error', text: error.response?.data?.message || "Erro ao criar sala."});
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,21 +89,20 @@ const PaginaSalas = () => {
             <input id="local-sala" type="text" value={localizacao} onChange={(e) => setLocalizacao(e.target.value)} style={inputStyle} required />
           </div>
 
-          {/* INÍCIO: NOVOS CAMPOS DE HORÁRIO */}
           <h3 style={{...labelStyle, fontSize: '1rem', marginTop: '1rem', borderTop: '1px solid #374151', paddingTop: '1rem'}}>Horário Disponível</h3>
           
           <div>
             <label htmlFor="dia-semana" style={labelStyle}>Dia da Semana</label>
+            {/* INÍCIO DA CORREÇÃO */}
             <select id="dia-semana" value={diaSemana} onChange={(e) => setDiaSemana(e.target.value)} style={inputStyle} required>
               <option value="">Selecione o dia</option>
-              <option value="Segunda-feira">Segunda-feira</option>
-              <option value="Terça-feira">Terça-feira</option>
-              <option value="Quarta-feira">Quarta-feira</option>
-              <option value="Quinta-feira">Quinta-feira</option>
-              <option value="Sexta-feira">Sexta-feira</option>
-              <option value="Sábado">Sábado</option>
-              <option value="Domingo">Domingo</option>
+              <option value="Segunda">Segunda-feira</option>
+              <option value="Terça">Terça-feira</option>
+              <option value="Quarta">Quarta-feira</option>
+              <option value="Quinta">Quinta-feira</option>
+              <option value="Sexta">Sexta-feira</option>
             </select>
+            {/* FIM DA CORREÇÃO */}
           </div>
 
           <div style={{ display: 'flex', gap: '1rem' }}>
@@ -118,13 +115,15 @@ const PaginaSalas = () => {
               <input id="hora-fim" type="time" value={horaFim} onChange={(e) => setHoraFim(e.target.value)} style={inputStyle} required />
             </div>
           </div>
-          {/* FIM: NOVOS CAMPOS DE HORÁRIO */}
 
-          <button type="submit" style={buttonStyle}>Criar Sala</button>
+          <button type="submit" style={buttonStyle} disabled={loading}>
+            {loading ? 'Criando...' : 'Criar Sala'}
+          </button>
           {mensagem && <p style={{ marginTop: '1rem', color: mensagem.type === 'error' ? '#f87171' : '#34d399' }}>{mensagem.text}</p>}
         </form>
       </div>
     </div>
   );
 };
+
 export default PaginaSalas;
