@@ -16,6 +16,7 @@ const PaginaAvaliacoes = ({ monitorId }) => {
         const data = await getAvaliacoesDoMonitor(monitorId);
         setAvaliacoes(data);
       } catch (error) {
+        console.error("Erro ao obter avaliações:", error);
         setErro("Erro ao obter avaliações.");
       }
     };
@@ -25,7 +26,7 @@ const PaginaAvaliacoes = ({ monitorId }) => {
   return (
     <div style={cardStyle}>
       <h2 style={cardTitleStyle}>Avaliações Recebidas</h2>
-      {erro && <p style={{color: '#f87171'}}>{erro}</p>}
+      {erro && <p style={{color: 'red'}}>{erro}</p>}
       {avaliacoes.length > 0 ? (
         <ul>
           {avaliacoes.map((av) => (

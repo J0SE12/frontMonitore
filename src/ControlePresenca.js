@@ -48,20 +48,31 @@ const ControlePresenca = () => {
   return (
     <div style={cardStyle}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>Controle de Presença</h2>
-        <form onSubmit={() => {}} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        <form onSubmit={registrarPresenca} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-                <label htmlFor="aula-select" style={labelStyle}>Selecione a Aula</label>
-                <select id="aula-select" style={inputStyle} required>{/* ... */}</select>
+                <label htmlFor="aula-select" style={labelStyle}>Selecione a Aula (Disciplina):</label>
+                <select id="aula-select" value={aulaId} onChange={(e) => setAulaId(e.target.value)} style={inputStyle} required>
+                    <option value="">Escolha uma aula</option>
+                    {aulas.map((aula) => (
+                        <option key={aula.id_dsc} value={aula.id_dsc}>{aula.nome}</option>
+                    ))}
+                </select>
             </div>
             <div>
-                <label htmlFor="aluno-select" style={labelStyle}>Selecione o Aluno</label>
-                <select id="aluno-select" style={inputStyle} required>{/* ... */}</select>
+                <label htmlFor="aluno-select" style={labelStyle}>Selecione o Aluno:</label>
+                <select id="aluno-select" value={alunoId} onChange={(e) => setAlunoId(e.target.value)} style={inputStyle} required>
+                    <option value="">Escolha um aluno</option>
+                    {alunos.map((aluno) => (
+                        <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
+                    ))}
+                </select>
             </div>
             <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-                <input id="presenca-check" type="checkbox" style={{width: '1rem', height: '1rem'}} />
+                <input id="presenca-check" type="checkbox" checked={presente} onChange={(e) => setPresente(e.target.checked)} style={{width: '1rem', height: '1rem'}} />
                 <label htmlFor="presenca-check" style={labelStyle}>Presente</label>
             </div>
             <button type="submit" style={buttonStyle}>Registar Presença</button>
+            {mensagem && <p style={{marginTop: '1rem'}}>{mensagem}</p>}
         </form>
     </div>
   );
