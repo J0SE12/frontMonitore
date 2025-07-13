@@ -20,6 +20,7 @@ const GerenciarAulas = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            if (!user?.id) return;
             try {
                 const [disciplinasData, horariosData] = await Promise.all([
                     getMinhasDisciplinas(user.id),
@@ -28,11 +29,11 @@ const GerenciarAulas = () => {
                 setDisciplinas(disciplinasData);
                 setHorarios(horariosData);
             } catch (error) {
-                setMensagem('Erro ao carregar dados para o formulário.');
+                setMensagem({ type: 'error', text: 'Erro ao carregar dados para o formulário.' });
             }
         };
         fetchData();
-    }, [user.id]);
+    }, [user]);
 
     const handleCriarAula = async (e) => {
         e.preventDefault();
@@ -45,9 +46,9 @@ const GerenciarAulas = () => {
                 titulo_aula: tituloAula,
                 vagas_disponiveis: vagas
             });
-            setMensagem('Aula criada com sucesso!');
+            setMensagem({ type: 'success', text: 'Aula criada com sucesso!' });
         } catch (error) {
-            setMensagem(error.message || 'Erro ao criar aula.');
+            setMensagem({ type: 'error', text: error.message || 'Erro ao criar aula.' });
         }
     };
 
@@ -78,7 +79,7 @@ const GerenciarAulas = () => {
                     <input id="vagas-input" type="number" value={vagas} onChange={e => setVagas(e.target.value)} style={inputStyle} min="1" required />
                 </div>
                 <button type="submit" style={buttonStyle}>Criar Aula</button>
-                {mensagem && <p style={{ marginTop: '1rem', color: '#34d399' }}>{mensagem}</p>}
+                {mensagem && <p style={{ marginTop: '1rem', color: mensagem.type === 'error' ? '#f87171' : '#34d399' }}>{mensagem.text}</p>}
             </form>
         </div>
     );
