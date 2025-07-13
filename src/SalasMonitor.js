@@ -33,7 +33,7 @@ const PaginaSalas = () => {
     try {
       await criarSala({ nome, capacidade, localizacao });
       setMensagem({ type: 'success', text: "Sala criada com sucesso!"});
-      fetchSalas(); // Atualiza a lista após a criação
+      fetchSalas(); // 👇 Atualiza a lista após a criação
       setNome("");
       setCapacidade("");
       setLocalizacao("");
