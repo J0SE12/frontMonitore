@@ -1,52 +1,65 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom'; // 1. Importar o hook
-import { getAulasDoAluno } from './services/api'; // 2. Usar o serviço de API
+import { useParams } from 'react-router-dom';
+import { getAulasDoAluno } from './services/api'; 
 
 const cardStyle = { backgroundColor: '#1f2937', borderRadius: '0.75rem', padding: '1.5rem', color: '#d1d5db', marginBottom: '1rem' };
 const cardTitleStyle = { fontSize: '1.25rem', fontWeight: 'bold', color: 'white', borderBottom: '1px solid #374151', paddingBottom: '0.5rem', marginBottom: '1rem' };
+const aulaCardStyle = { backgroundColor: '#374151', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem' };
+const aulaTitleStyle = { fontSize: '1.1rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' };
+const detailStyle = { color: '#d1d5db', marginBottom: '0.25rem' };
+
 
 const PaginaAulas = () => {
-  const { id } = useParams(); // 3. Obter o ID do aluno diretamente da URL
-  const [aulas, setAulas] = useState([]);
-  const [erro, setErro] = useState('');
+  const { id } = useParams(); 
+  const [aulas, setAulas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState('');
 
-  useEffect(() => {
-    // 4. Garantir que a busca só acontece se houver um ID
-    if (id) {
-      const fetchAulas = async () => {
-        try {
-          const data = await getAulasDoAluno(id);
-          setAulas(data);
-        } catch (error) {
-          setErro(error.message || 'Erro ao carregar as aulas.');
+  useEffect(() => {
+    if (id) {
+      const fetchAulas = async () => {
+        setLoading(true);
+        try {
+          const data = await getAulasDoAluno(id);
+          setAulas(data);
+        } catch (error) {
+          setErro(error.message || 'Erro ao carregar as aulas.');
+        } finally {
+          setLoading(false);
         }
-      };
-      fetchAulas();
-    }
-  }, [id]); // A dependência agora é o ID da URL
+      };
+      fetchAulas();
+    }
+  }, [id]);
 
-  if (erro) return <p style={{ color: '#f87171' }}>{erro}</p>;
+  // Função para formatar o horário de HH:MM:SS para HH:MM
+  const formatarHorario = (inicio, fim) => {
+      const h_inicio = inicio.substring(0, 5);
+      const h_fim = fim.substring(0, 5);
+      return `das ${h_inicio} às ${h_fim}`;
+  };
 
-  if (!aulas) return <p>Carregando aulas...</p>;
+  if (loading) return <div style={cardStyle}><p>Carregando aulas...</p></div>;
+  if (erro) return <div style={cardStyle}><p style={{ color: '#f87171' }}>{erro}</p></div>;
 
-  return (
-    <div style={cardStyle}>
-      <h2 style={cardTitleStyle}>Minhas Aulas Inscritas</h2>
-      {aulas.length > 0 ? (
-        <ul>
-          {aulas.map((aula) => (
-            <li key={aula.id_sala || aula.id_aula} style={{ borderBottom: '1px solid #374151', padding: '1rem 0' }}>
-              <h3 style={{ fontSize: '1.1rem', color: 'white' }}>{aula.disciplina}</h3>
-              <p>com {aula.monitor_nome || 'Monitor'}</p>
-              <p style={{fontSize: '0.9rem', color: '#9ca3af'}}>{aula.dia_da_semana}, das {aula.hora_inicio} às {aula.hora_fim} na sala {aula.localizacao}</p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>Você não está inscrito em nenhuma aula.</p>
-      )}
-    </div>
-  );
+  return (
+    <div style={cardStyle}>
+      <h2 style={cardTitleStyle}>Minhas Aulas Inscritas</h2>
+      {aulas.length > 0 ? (
+        aulas.map((aula) => (
+          <div key={aula.id_aula} style={aulaCardStyle}>
+            <h3 style={aulaTitleStyle}>{aula.titulo_aula}</h3>
+            <p style={detailStyle}><strong>Disciplina:</strong> {aula.disciplina_nome}</p>
+            <p style={detailStyle}><strong>Monitor:</strong> {aula.monitor_nome}</p>
+            <p style={detailStyle}><strong>Local:</strong> {aula.sala_nome} ({aula.localizacao})</p>
+            <p style={detailStyle}><strong>Horário:</strong> {aula.dia_da_semana}, {formatarHorario(aula.hora_inicio, aula.hora_fim)}</p>
+          </div>
+        ))
+      ) : (
+        <p>Você não está inscrito em nenhuma aula.</p>
+      )}
+    </div>
+  );
 };
 
 export default PaginaAulas;
