@@ -8,27 +8,27 @@ const buttonStyle = { backgroundColor: '#34d399', color: '#111827', fontWeight: 
 const BuscarAulas = () => {
     const { user } = useAuth();
     const [aulas, setAulas] = useState([]);
-    const [mensagem, setMensagem] = useState('');
+    const [mensagem, setMensagem] = useState(null);
 
     const fetchAulas = async () => {
-        try {
-            const data = await getAllAulas();
-            setAulas(data);
-        } catch (error) {
-            setMensagem({ type: 'error', text: 'Erro ao carregar aulas disponíveis.' });
-        }
-    };
+  try {
+    const data = await getAllAulas();
+    setAulas(data);
+  } catch (error) {
+    setMensagem({ type: 'error', text: 'Erro ao carregar aulas disponíveis.' });
+  }
+};
 
     useEffect(() => {
         fetchAulas();
     }, []);
 
     const handleInscricao = async (aulaId) => {
-        setMensagem('');
+        setMensagem(null);
         try {
             await inscreverAluno({ aula_id: aulaId, aluno_id: user.id });
             setMensagem({ type: 'success', text: 'Inscrição realizada com sucesso!' });
-            fetchAulas(); // Atualiza a lista para refletir a vaga a menos
+            fetchAulas();
         } catch (error) {
             setMensagem({ type: 'error', text: error.message || 'Erro ao realizar inscrição.' });
         }
@@ -37,7 +37,9 @@ const BuscarAulas = () => {
     return (
         <div>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>Aulas Disponíveis</h2>
-            {mensagem && <p style={{ color: mensagem.type === 'error' ? '#f87171' : '#34d399', marginBottom: '1rem' }}>{mensagem.text}</p>}
+            {mensagem?.text && (
+                <p style={{ color: mensagem.type === 'error' ? '#f87171' : '#34d399', marginBottom: '1rem' }}>{mensagem.text}</p>
+            )}
             {aulas.length > 0 ? (
                 aulas.map(aula => (
                     <div key={aula.id_aula} style={cardStyle}>

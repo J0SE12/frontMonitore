@@ -11,7 +11,8 @@ const GerenciarAulas = () => {
     const { user } = useAuth();
     const [disciplinas, setDisciplinas] = useState([]);
     const [horarios, setHorarios] = useState([]);
-    const [mensagem, setMensagem] = useState('');
+    const [mensagem, setMensagem] = useState(null);
+
     const [disciplinaId, setDisciplinaId] = useState('');
     const [horarioId, setHorarioId] = useState('');
     const [tituloAula, setTituloAula] = useState('');
@@ -37,7 +38,7 @@ const GerenciarAulas = () => {
 
     const handleCriarAula = async (e) => {
         e.preventDefault();
-        setMensagem('');
+        setMensagem(null);
         try {
             await criarAula({
                 disciplina_id: disciplinaId,
@@ -47,6 +48,10 @@ const GerenciarAulas = () => {
                 vagas_disponiveis: vagas
             });
             setMensagem({ type: 'success', text: 'Aula criada com sucesso!' });
+            setDisciplinaId('');
+            setHorarioId('');
+            setTituloAula('');
+            setVagas(10);
         } catch (error) {
             setMensagem({ type: 'error', text: error.message || 'Erro ao criar aula.' });
         }
@@ -76,10 +81,12 @@ const GerenciarAulas = () => {
                 </div>
                 <div>
                     <label htmlFor="vagas-input" style={labelStyle}>Vagas Disponíveis</label>
-                    <input id="vagas-input" type="number" value={vagas} onChange={e => setVagas(e.target.value)} style={inputStyle} min="1" required />
+                    <input id="vagas-input" type="number" value={vagas} onChange={e => setVagas(Number(e.target.value))} style={inputStyle} min="1" required />
                 </div>
                 <button type="submit" style={buttonStyle}>Criar Aula</button>
-                {mensagem && <p style={{ marginTop: '1rem', color: mensagem.type === 'error' ? '#f87171' : '#34d399' }}>{mensagem.text}</p>}
+                {mensagem?.text && (
+                    <p style={{ marginTop: '1rem', color: mensagem.type === 'error' ? '#f87171' : '#34d399' }}>{mensagem.text}</p>
+                )}
             </form>
         </div>
     );
